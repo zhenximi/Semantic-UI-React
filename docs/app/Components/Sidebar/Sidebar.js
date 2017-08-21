@@ -8,7 +8,7 @@ import { withRouter } from 'react-router'
 import pkg from 'package.json'
 import { typeOrder, parentComponents, repoURL } from 'docs/app/utils'
 import { keyboardKey, META } from 'src/lib'
-import Logo from 'docs/app/Components/Logo/Logo'
+import Logo from 'docs/app/Components/Logo'
 import {
   Menu,
   Icon,

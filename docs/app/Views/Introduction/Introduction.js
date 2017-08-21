@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 import Editor from 'docs/app/Components/Editor/Editor'
 import { semanticUIDocsURL, repoURL } from 'docs/app/utils'
-import pkg from 'package.json'
 import {
   Container,
   Divider,
@@ -15,7 +14,8 @@ import {
   List,
   Segment,
 } from 'src'
-import Logo from '../Components/Logo/Logo'
+import IntroductionAdvantages from './IntroductionAdvantages'
+import IntroductionTop from './IntroductionTop'
 
 const AccordionJSX = `const panels = [{
   title: 'What is a dog?',
@@ -141,34 +141,9 @@ Comparison.propTypes = {
 }
 
 const Introduction = () => (
-  <Container id='introduction-page'>
-    <Segment basic textAlign='center'>
-      <Logo centered size='small' />
-      <Header as='h1' textAlign='center'>
-        Semantic UI React
-        <Header.Subheader>
-          {pkg.description}
-        </Header.Subheader>
-      </Header>
-    </Segment>
-
-    <Segment basic padded>
-      <Header as='h2' dividing>Introduction</Header>
-      <p>
-        Semantic UI React is the official React integration for <a href={semanticUIDocsURL}>Semantic UI</a> .
-      </p>
-      <List>
-        <List.Item icon='check' content='jQuery Free' />
-        <List.Item icon='check' content='Declarative API' />
-        <List.Item icon='check' content='Augmentation' />
-        <List.Item icon='check' content='Shorthand Props' />
-        <List.Item icon='check' content='Sub Components' />
-        <List.Item icon='check' content='Auto Controlled State' />
-      </List>
-      <p>
-        Installation instructions are provided in the <Link to='/usage'>Usage</Link> section.
-      </p>
-    </Segment>
+  <Container id='introduction-page' fluid>
+    <IntroductionTop />
+    <IntroductionAdvantages />
 
     {/* ----------------------------------------
      *  jQuery Free

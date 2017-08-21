@@ -11,7 +11,7 @@ import {
   Message,
   Segment,
 } from 'src'
-import Logo from '../Components/Logo/Logo'
+import Logo from '../Components/Logo'
 
 const suiCSSVersion = pkg.devDependencies['semantic-ui-css'].replace(/[~^]/, '')
 

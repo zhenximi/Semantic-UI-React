@@ -25,7 +25,7 @@ const Router = () => (
       <Route exact path='/maximize/:kebabCaseName' component={ExternalExampleLayout} />
       <Switch>
         <DocsLayout exact path='/' render={RedirectToIntro} />
-        <DocsLayout exact path='/introduction' component={Introduction} />
+        <Route exact path='/introduction' component={Introduction} />
         <DocsLayout exact path='/layouts' component={Layouts} />
         <LayoutsLayout exact path='/layouts/:name' component={LayoutsRoot} />
         <DocsLayout exact path='/usage' component={Usage} />
