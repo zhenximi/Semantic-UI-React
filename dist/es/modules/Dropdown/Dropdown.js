@@ -439,7 +439,7 @@ var Dropdown = function (_Component) {
       }
 
       if (!newSelectedIndex || newSelectedIndex < 0) {
-        newSelectedIndex = enabledIndicies[0];
+        newSelectedIndex = enabledIndicies[0] || 0;
       }
 
       _this.setState({ selectedIndex: newSelectedIndex });
