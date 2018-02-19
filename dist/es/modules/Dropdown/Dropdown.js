@@ -136,7 +136,9 @@ var Dropdown = function (_Component) {
       // Notify the onAddItem prop if this is a new value
       if (item['data-additional']) _invoke(_this.props, 'onAddItem', e, _extends({}, _this.props, { value: value }));
     }, _this.selectItemOnEnter = function (e) {
-      var search = _this.props.search;
+      var _this$props3 = _this.props,
+          search = _this$props3.search,
+          selectFocusInput = _this$props3.selectFocusInput;
 
 
       if (keyboardKey.getCode(e) !== keyboardKey.Enter) return;
@@ -148,11 +150,17 @@ var Dropdown = function (_Component) {
       _this.makeSelectedItemActive(e);
       _this.closeOnChange(e);
       _this.clearSearchQuery();
-      if (search && _this.searchRef) _this.searchRef.focus();
+      if (_this.searchRef) {
+        if (search && selectFocusInput) {
+          _this.searchRef.focus();
+        } else {
+          _this.searchRef.blur();
+        }
+      }
     }, _this.removeItemOnBackspace = function (e) {
-      var _this$props3 = _this.props,
-          multiple = _this$props3.multiple,
-          search = _this$props3.search;
+      var _this$props4 = _this.props,
+          multiple = _this$props4.multiple,
+          search = _this$props4.search;
       var _this$state = _this.state,
           searchQuery = _this$state.searchQuery,
           value = _this$state.value;
@@ -190,9 +198,9 @@ var Dropdown = function (_Component) {
       _this.isMouseDown = false;
       eventStack.unsub('mouseup', _this.handleDocumentMouseUp);
     }, _this.handleClick = function (e) {
-      var _this$props4 = _this.props,
-          minCharacters = _this$props4.minCharacters,
-          search = _this$props4.search;
+      var _this$props5 = _this.props,
+          minCharacters = _this$props5.minCharacters,
+          search = _this$props5.search;
       var _this$state2 = _this.state,
           open = _this$state2.open,
           searchQuery = _this$state2.searchQuery;
@@ -216,9 +224,10 @@ var Dropdown = function (_Component) {
       e.stopPropagation();
       _this.toggle(e);
     }, _this.handleItemClick = function (e, item) {
-      var _this$props5 = _this.props,
-          multiple = _this$props5.multiple,
-          search = _this$props5.search;
+      var _this$props6 = _this.props,
+          multiple = _this$props6.multiple,
+          search = _this$props6.search,
+          selectFocusInput = _this$props6.selectFocusInput;
       var value = item.value;
 
       // prevent toggle() in handleClick()
@@ -245,7 +254,7 @@ var Dropdown = function (_Component) {
       // Notify the onAddItem prop if this is a new value
       if (isAdditionItem) _invoke(_this.props, 'onAddItem', e, _extends({}, _this.props, { value: value }));
 
-      if (multiple && search && _this.searchRef) _this.searchRef.focus();
+      if (search && _this.searchRef && selectFocusInput) _this.searchRef.focus();
     }, _this.handleFocus = function (e) {
       var focus = _this.state.focus;
 
@@ -261,11 +270,11 @@ var Dropdown = function (_Component) {
       var currentTarget = _get(e, 'currentTarget');
       if (currentTarget && currentTarget.contains(document.activeElement)) return;
 
-      var _this$props6 = _this.props,
-          closeOnBlur = _this$props6.closeOnBlur,
-          multiple = _this$props6.multiple,
-          onBlur = _this$props6.onBlur,
-          selectOnBlur = _this$props6.selectOnBlur;
+      var _this$props7 = _this.props,
+          closeOnBlur = _this$props7.closeOnBlur,
+          multiple = _this$props7.multiple,
+          onBlur = _this$props7.onBlur,
+          selectOnBlur = _this$props7.selectOnBlur;
       // do not "blur" when the mouse is down inside of the Dropdown
 
       if (_this.isMouseDown) return;
@@ -302,13 +311,13 @@ var Dropdown = function (_Component) {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.state.value;
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _this.props.options;
       var searchQuery = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _this.state.searchQuery;
-      var _this$props7 = _this.props,
-          additionLabel = _this$props7.additionLabel,
-          additionPosition = _this$props7.additionPosition,
-          allowAdditions = _this$props7.allowAdditions,
-          deburr = _this$props7.deburr,
-          multiple = _this$props7.multiple,
-          search = _this$props7.search;
+      var _this$props8 = _this.props,
+          additionLabel = _this$props8.additionLabel,
+          additionPosition = _this$props8.additionPosition,
+          allowAdditions = _this$props8.allowAdditions,
+          deburr = _this$props8.deburr,
+          multiple = _this$props8.multiple,
+          search = _this$props8.search;
 
 
       var filteredOptions = options;
@@ -380,11 +389,11 @@ var Dropdown = function (_Component) {
 
       return _findIndex(options, ['value', value]);
     }, _this.getDropdownAriaOptions = function () {
-      var _this$props8 = _this.props,
-          loading = _this$props8.loading,
-          disabled = _this$props8.disabled,
-          search = _this$props8.search,
-          multiple = _this$props8.multiple;
+      var _this$props9 = _this.props,
+          loading = _this$props9.loading,
+          disabled = _this$props9.disabled,
+          search = _this$props9.search,
+          multiple = _this$props9.multiple;
       var open = _this.state.open;
 
       var ariaOptions = {
@@ -500,9 +509,9 @@ var Dropdown = function (_Component) {
     }, _this.handleRef = function (c) {
       return _this.ref = c;
     }, _this.computeSearchInputTabIndex = function () {
-      var _this$props9 = _this.props,
-          disabled = _this$props9.disabled,
-          tabIndex = _this$props9.tabIndex;
+      var _this$props10 = _this.props,
+          disabled = _this$props10.disabled,
+          tabIndex = _this$props10.tabIndex;
 
 
       if (!_isNil(tabIndex)) return tabIndex;
@@ -522,10 +531,10 @@ var Dropdown = function (_Component) {
         return searchWidth;
       }
     }, _this.computeTabIndex = function () {
-      var _this$props10 = _this.props,
-          disabled = _this$props10.disabled,
-          search = _this$props10.search,
-          tabIndex = _this$props10.tabIndex;
+      var _this$props11 = _this.props,
+          disabled = _this$props11.disabled,
+          search = _this$props11.search,
+          tabIndex = _this$props11.tabIndex;
 
       // don't set a root node tabIndex as the search input has its own tabIndex
 
@@ -548,10 +557,10 @@ var Dropdown = function (_Component) {
         menu.scrollTop = item.offsetTop + item.clientHeight - menu.clientHeight;
       }
     }, _this.open = function (e) {
-      var _this$props11 = _this.props,
-          disabled = _this$props11.disabled,
-          onOpen = _this$props11.onOpen,
-          search = _this$props11.search;
+      var _this$props12 = _this.props,
+          disabled = _this$props12.disabled,
+          onOpen = _this$props12.onOpen,
+          search = _this$props12.search;
 
       if (disabled) return;
       if (search && _this.searchRef) _this.searchRef.focus();
@@ -582,11 +591,11 @@ var Dropdown = function (_Component) {
     }, _this.toggle = function (e) {
       return _this.state.open ? _this.close(e) : _this.open(e);
     }, _this.renderText = function () {
-      var _this$props12 = _this.props,
-          multiple = _this$props12.multiple,
-          placeholder = _this$props12.placeholder,
-          search = _this$props12.search,
-          text = _this$props12.text;
+      var _this$props13 = _this.props,
+          multiple = _this$props13.multiple,
+          placeholder = _this$props13.placeholder,
+          search = _this$props13.search,
+          text = _this$props13.text;
       var _this$state3 = _this.state,
           searchQuery = _this$state3.searchQuery,
           value = _this$state3.value;
@@ -601,28 +610,9 @@ var Dropdown = function (_Component) {
         _text = text;
       } else if (hasValue) {
         _text = _get(_this.getItemByValue(value), 'text');
-      }
-      if (!_text) {
-        _text = placeholder;
-      }
-
-      /*
-       * This older code was removed because we wanted different behavior
-       * We want the text to show the placeholder text if the item is empty
-       * We want the placeholder to show the currently selected value, not the selected item
-      if (searchQuery) {
-        _text = null
-      } else if (text) {
-        _text = text
-      } else if (hasValue) {
-        _text = _.get(this.getItemByValue(value), 'text')
       } else if (open && !multiple) {
-        _text = _.get(this.getSelectedItem(), 'text')
+        _text = _get(_this.getSelectedItem(), 'text');
       }
-      if (!_text) {
-        _text = placeholder
-      }
-      */
 
       return React.createElement(
         'div',
@@ -630,9 +620,9 @@ var Dropdown = function (_Component) {
         _text
       );
     }, _this.renderSearchInput = function () {
-      var _this$props13 = _this.props,
-          search = _this$props13.search,
-          searchInput = _this$props13.searchInput;
+      var _this$props14 = _this.props,
+          search = _this$props14.search,
+          searchInput = _this$props14.searchInput;
       var searchQuery = _this.state.searchQuery;
 
 
@@ -645,17 +635,17 @@ var Dropdown = function (_Component) {
           value: searchQuery
         } });
     }, _this.renderSearchSizer = function () {
-      var _this$props14 = _this.props,
-          search = _this$props14.search,
-          multiple = _this$props14.multiple;
+      var _this$props15 = _this.props,
+          search = _this$props15.search,
+          multiple = _this$props15.multiple;
 
 
       if (!(search && multiple)) return null;
       return React.createElement('span', { className: 'sizer', ref: _this.handleSizerRef });
     }, _this.renderLabels = function () {
-      var _this$props15 = _this.props,
-          multiple = _this$props15.multiple,
-          renderLabel = _this$props15.renderLabel;
+      var _this$props16 = _this.props,
+          multiple = _this$props16.multiple,
+          renderLabel = _this$props16.renderLabel;
       var _this$state4 = _this.state,
           selectedLabel = _this$state4.selectedLabel,
           value = _this$state4.value;
@@ -681,10 +671,10 @@ var Dropdown = function (_Component) {
         return Label.create(renderLabel(item, index, defaultProps), { defaultProps: defaultProps });
       });
     }, _this.renderOptions = function () {
-      var _this$props16 = _this.props,
-          multiple = _this$props16.multiple,
-          search = _this$props16.search,
-          noResultsMessage = _this$props16.noResultsMessage;
+      var _this$props17 = _this.props,
+          multiple = _this$props17.multiple,
+          search = _this$props17.search,
+          noResultsMessage = _this$props17.noResultsMessage;
       var _this$state5 = _this.state,
           selectedIndex = _this$state5.selectedIndex,
           value = _this$state5.value;
@@ -717,9 +707,9 @@ var Dropdown = function (_Component) {
         }));
       });
     }, _this.renderMenu = function () {
-      var _this$props17 = _this.props,
-          children = _this$props17.children,
-          header = _this$props17.header;
+      var _this$props18 = _this.props,
+          children = _this$props18.children,
+          header = _this$props18.header;
       var open = _this.state.open;
 
       var menuClasses = open ? 'visible' : '';
@@ -990,7 +980,8 @@ Dropdown.defaultProps = {
   },
   searchInput: 'text',
   selectOnBlur: true,
-  selectOnNavigation: true
+  selectOnNavigation: true,
+  selectFocusInput: false
 };
 Dropdown.autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value'];
 Dropdown._meta = {
@@ -1002,7 +993,7 @@ Dropdown.Header = DropdownHeader;
 Dropdown.Item = DropdownItem;
 Dropdown.Menu = DropdownMenu;
 Dropdown.SearchInput = DropdownSearchInput;
-Dropdown.handledProps = ['additionLabel', 'additionPosition', 'allowAdditions', 'as', 'basic', 'button', 'children', 'className', 'closeOnBlur', 'closeOnChange', 'compact', 'deburr', 'defaultOpen', 'defaultSearchQuery', 'defaultSelectedLabel', 'defaultValue', 'disabled', 'error', 'floating', 'fluid', 'header', 'icon', 'inline', 'item', 'labeled', 'loading', 'minCharacters', 'multiple', 'noResultsMessage', 'onAddItem', 'onBlur', 'onChange', 'onClick', 'onClose', 'onFocus', 'onLabelClick', 'onMouseDown', 'onOpen', 'onSearchChange', 'open', 'openOnFocus', 'options', 'placeholder', 'pointing', 'renderLabel', 'scrolling', 'search', 'searchInput', 'searchQuery', 'selectOnBlur', 'selectOnNavigation', 'selectedLabel', 'selection', 'simple', 'tabIndex', 'text', 'trigger', 'upward', 'value'];
+Dropdown.handledProps = ['additionLabel', 'additionPosition', 'allowAdditions', 'as', 'basic', 'button', 'children', 'className', 'closeOnBlur', 'closeOnChange', 'compact', 'deburr', 'defaultOpen', 'defaultSearchQuery', 'defaultSelectedLabel', 'defaultValue', 'disabled', 'error', 'floating', 'fluid', 'header', 'icon', 'inline', 'item', 'labeled', 'loading', 'minCharacters', 'multiple', 'noResultsMessage', 'onAddItem', 'onBlur', 'onChange', 'onClick', 'onClose', 'onFocus', 'onLabelClick', 'onMouseDown', 'onOpen', 'onSearchChange', 'open', 'openOnFocus', 'options', 'placeholder', 'pointing', 'renderLabel', 'scrolling', 'search', 'searchInput', 'searchQuery', 'selectFocusInput', 'selectOnBlur', 'selectOnNavigation', 'selectedLabel', 'selection', 'simple', 'tabIndex', 'text', 'trigger', 'upward', 'value'];
 export default Dropdown;
 Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
@@ -1253,5 +1244,8 @@ Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))]),
 
   /** A dropdown can open upward. */
-  upward: PropTypes.bool
+  upward: PropTypes.bool,
+
+  /** After an item is selected, the focus will be on the input search box. */
+  selectFocusInput: PropTypes.bool
 } : {};
