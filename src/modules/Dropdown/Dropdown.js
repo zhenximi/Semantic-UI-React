@@ -352,6 +352,9 @@ export default class Dropdown extends Component {
 
     /** A dropdown can open upward. */
     upward: PropTypes.bool,
+
+    /** After an item is selected, the focus will be on the input search box. */
+    selectFocusInput: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -367,6 +370,7 @@ export default class Dropdown extends Component {
     searchInput: 'text',
     selectOnBlur: true,
     selectOnNavigation: true,
+    selectFocusInput: false,
   }
 
   static autoControlledProps = [
@@ -605,7 +609,7 @@ export default class Dropdown extends Component {
 
   selectItemOnEnter = (e) => {
     debug('selectItemOnEnter()', keyboardKey.getName(e))
-    const { search } = this.props
+    const { search, selectFocusInput } = this.props
 
     if (keyboardKey.getCode(e) !== keyboardKey.Enter) return
     e.preventDefault()
@@ -616,7 +620,13 @@ export default class Dropdown extends Component {
     this.makeSelectedItemActive(e)
     this.closeOnChange(e)
     this.clearSearchQuery()
-    if (search && this.searchRef) this.searchRef.focus()
+    if (this.searchRef) {
+      if (search && selectFocusInput) {
+        this.searchRef.focus()
+      } else {
+        this.searchRef.blur()
+      }
+    }
   }
 
   removeItemOnBackspace = (e) => {
@@ -710,7 +720,7 @@ export default class Dropdown extends Component {
   handleItemClick = (e, item) => {
     debug('handleItemClick()', item)
 
-    const { multiple, search } = this.props
+    const { multiple, search, selectFocusInput } = this.props
     const { value } = item
 
     // prevent toggle() in handleClick()
@@ -736,7 +746,7 @@ export default class Dropdown extends Component {
     // Notify the onAddItem prop if this is a new value
     if (isAdditionItem) _.invoke(this.props, 'onAddItem', e, { ...this.props, value })
 
-    if (multiple && search && this.searchRef) this.searchRef.focus()
+    if (search && this.searchRef && selectFocusInput) this.searchRef.focus()
   }
 
   handleFocus = (e) => {
@@ -1154,28 +1164,9 @@ export default class Dropdown extends Component {
       _text = text
     } else if (hasValue) {
       _text = _.get(this.getItemByValue(value), 'text')
-    }
-    if (!_text) {
-      _text = placeholder
-    }
-
-    /*
-     * This older code was removed because we wanted different behavior
-     * We want the text to show the placeholder text if the item is empty
-     * We want the placeholder to show the currently selected value, not the selected item
-    if (searchQuery) {
-      _text = null
-    } else if (text) {
-      _text = text
-    } else if (hasValue) {
-      _text = _.get(this.getItemByValue(value), 'text')
     } else if (open && !multiple) {
       _text = _.get(this.getSelectedItem(), 'text')
     }
-    if (!_text) {
-      _text = placeholder
-    }
-    */
 
     return <div className={classes} role='alert' aria-live='polite'>{_text}</div>
   }

@@ -254,6 +254,9 @@ export interface DropdownProps {
 
   /** A dropdown can open upward. */
   upward?: boolean;
+
+  /** After an item is selected, the focus will be on the input search box.  By default, the control loses focus like a dropdown */
+  selectFocusInput?: boolean;
 }
 
 /* TODO: replace with DropdownProps when #1829 will be fixed:
