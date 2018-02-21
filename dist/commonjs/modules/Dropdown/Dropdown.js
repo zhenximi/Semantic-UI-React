@@ -1108,7 +1108,7 @@ Dropdown.defaultProps = {
   selectOnNavigation: true,
   selectFocusInput: false
 };
-Dropdown.autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value'];
+Dropdown.autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value', 'selectedIndex'];
 Dropdown._meta = {
   name: 'Dropdown',
   type: _lib.META.TYPES.MODULE
@@ -1118,7 +1118,7 @@ Dropdown.Header = _DropdownHeader2.default;
 Dropdown.Item = _DropdownItem2.default;
 Dropdown.Menu = _DropdownMenu2.default;
 Dropdown.SearchInput = _DropdownSearchInput2.default;
-Dropdown.handledProps = ['additionLabel', 'additionPosition', 'allowAdditions', 'as', 'basic', 'button', 'children', 'className', 'closeOnBlur', 'closeOnChange', 'compact', 'deburr', 'defaultOpen', 'defaultSearchQuery', 'defaultSelectedLabel', 'defaultValue', 'disabled', 'error', 'floating', 'fluid', 'header', 'icon', 'inline', 'item', 'labeled', 'loading', 'minCharacters', 'multiple', 'noResultsMessage', 'onAddItem', 'onBlur', 'onChange', 'onClick', 'onClose', 'onFocus', 'onLabelClick', 'onMouseDown', 'onOpen', 'onSearchChange', 'open', 'openOnFocus', 'options', 'placeholder', 'pointing', 'renderLabel', 'scrolling', 'search', 'searchInput', 'searchQuery', 'selectFocusInput', 'selectOnBlur', 'selectOnNavigation', 'selectedLabel', 'selection', 'simple', 'tabIndex', 'text', 'trigger', 'upward', 'value'];
+Dropdown.handledProps = ['additionLabel', 'additionPosition', 'allowAdditions', 'as', 'basic', 'button', 'children', 'className', 'closeOnBlur', 'closeOnChange', 'compact', 'deburr', 'defaultOpen', 'defaultSearchQuery', 'defaultSelectedIndex', 'defaultSelectedLabel', 'defaultValue', 'disabled', 'error', 'floating', 'fluid', 'header', 'icon', 'inline', 'item', 'labeled', 'loading', 'minCharacters', 'multiple', 'noResultsMessage', 'onAddItem', 'onBlur', 'onChange', 'onClick', 'onClose', 'onFocus', 'onLabelClick', 'onMouseDown', 'onOpen', 'onSearchChange', 'open', 'openOnFocus', 'options', 'placeholder', 'pointing', 'renderLabel', 'scrolling', 'search', 'searchInput', 'searchQuery', 'selectFocusInput', 'selectOnBlur', 'selectOnNavigation', 'selectedIndex', 'selectedLabel', 'selection', 'simple', 'tabIndex', 'text', 'trigger', 'upward', 'value'];
 exports.default = Dropdown;
 Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
@@ -1372,5 +1372,11 @@ Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   upward: _propTypes2.default.bool,
 
   /** After an item is selected, the focus will be on the input search box. */
-  selectFocusInput: _propTypes2.default.bool
+  selectFocusInput: _propTypes2.default.bool,
+
+  /** Default value for selectedIndex (if needed) */
+  defaultSelectedIndex: _propTypes2.default.number,
+
+  /** Allows you to set the currently selected item by value */
+  selectedIndex: _propTypes2.default.number
 } : {};
