@@ -1,5 +1,5 @@
 {
-  "name": "semantic-ui-react",
+  "name": "semantic-ui-react-mettel",
   "version": "0.78.2",
   "description": "Bruin branch of Semantic UI React Dropwdown",
   "jsnext:main": "dist/es/index.js",
