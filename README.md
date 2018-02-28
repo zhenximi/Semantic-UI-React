@@ -1,4 +1,5 @@
 <!-- Logo -->
+..
 <p align="center">
   <a href="https://react.semantic-ui.com">
     <img height="128" width="128" src="https://github.com/Semantic-Org/Semantic-UI-React/raw/master/docs/app/logo.png">
