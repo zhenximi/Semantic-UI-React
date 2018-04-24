@@ -65,6 +65,14 @@ class DropdownItem extends Component {
     onClick: PropTypes.func,
 
     /**
+     * Called on mouseEnter.
+     *
+     * @param {SyntheticEvent} event - React's original SyntheticEvent.
+     * @param {object} data - All props.
+     */
+    onMouseEnter: PropTypes.func,
+
+    /**
      * The item currently selected by keyboard shortcut.
      * This is not the active item.
      */
@@ -90,6 +98,12 @@ class DropdownItem extends Component {
     const { onClick } = this.props
 
     if (onClick) onClick(e, this.props)
+  }
+
+  handleMouseEnter = (e) => {
+    const { onMouseEnter } = this.props
+
+    if (onMouseEnter) onMouseEnter(e, this.props)
   }
 
   render() {
@@ -128,7 +142,7 @@ class DropdownItem extends Component {
 
     if (!childrenUtils.isNil(children)) {
       return (
-        <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick}>
+        <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick} onMouseEnter={this.handleMouseEnter}>
           {children}
         </ElementType>
       )
@@ -152,7 +166,7 @@ class DropdownItem extends Component {
     )
 
     return (
-      <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick}>
+      <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick} onMouseEnter={this.handleMouseEnter}>
         {imageElement}
         {iconElement}
         {flagElement}

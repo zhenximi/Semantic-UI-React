@@ -756,6 +756,14 @@ export default class Dropdown extends Component {
     if (search && this.searchRef && selectFocusInput) this.searchRef.focus()
   }
 
+    handleItemMouseEnter = (e, item) => {
+      debug('handleItemMouseEnter()', item)
+
+      const { value } = item
+
+      this.setSelectedIndex(value)
+    }
+
   handleFocus = (e) => {
     debug('handleFocus()')
     const { focus } = this.state
@@ -1244,6 +1252,7 @@ export default class Dropdown extends Component {
     return _.map(options, (opt, i) => DropdownItem.create({
       active: isActive(opt.value),
       onClick: this.handleItemClick,
+      onMouseEnter: this.handleItemMouseEnter,
       selected: selectedIndex === i,
       ...opt,
       key: getKeyOrValue(opt.key, opt.value),
