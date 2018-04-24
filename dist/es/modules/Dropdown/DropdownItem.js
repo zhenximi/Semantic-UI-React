@@ -38,6 +38,11 @@ var DropdownItem = function (_Component) {
 
 
       if (onClick) onClick(e, _this.props);
+    }, _this.handleMouseEnter = function (e) {
+      var onMouseEnter = _this.props.onMouseEnter;
+
+
+      if (onMouseEnter) onMouseEnter(e, _this.props);
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -74,7 +79,7 @@ var DropdownItem = function (_Component) {
       if (!childrenUtils.isNil(children)) {
         return React.createElement(
           ElementType,
-          _extends({}, rest, ariaOptions, { className: classes, onClick: this.handleClick }),
+          _extends({}, rest, ariaOptions, { className: classes, onClick: this.handleClick, onMouseEnter: this.handleMouseEnter }),
           children
         );
       }
@@ -92,7 +97,7 @@ var DropdownItem = function (_Component) {
 
       return React.createElement(
         ElementType,
-        _extends({}, rest, ariaOptions, { className: classes, onClick: this.handleClick }),
+        _extends({}, rest, ariaOptions, { className: classes, onClick: this.handleClick, onMouseEnter: this.handleMouseEnter }),
         imageElement,
         iconElement,
         flagElement,
@@ -111,7 +116,7 @@ DropdownItem._meta = {
   parent: 'Dropdown',
   type: META.TYPES.MODULE
 };
-DropdownItem.handledProps = ['active', 'as', 'children', 'className', 'content', 'description', 'disabled', 'flag', 'icon', 'image', 'label', 'onClick', 'selected', 'text', 'value'];
+DropdownItem.handledProps = ['active', 'as', 'children', 'className', 'content', 'description', 'disabled', 'flag', 'icon', 'image', 'label', 'onClick', 'onMouseEnter', 'selected', 'text', 'value'];
 DropdownItem.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
   as: customPropTypes.as,
@@ -153,6 +158,14 @@ DropdownItem.propTypes = process.env.NODE_ENV !== "production" ? {
    * @param {object} data - All props.
    */
   onClick: PropTypes.func,
+
+  /**
+   * Called on mouseEnter.
+   *
+   * @param {SyntheticEvent} event - React's original SyntheticEvent.
+   * @param {object} data - All props.
+   */
+  onMouseEnter: PropTypes.func,
 
   /**
    * The item currently selected by keyboard shortcut.

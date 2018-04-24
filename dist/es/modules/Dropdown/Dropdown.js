@@ -255,6 +255,11 @@ var Dropdown = function (_Component) {
       if (isAdditionItem) _invoke(_this.props, 'onAddItem', e, _extends({}, _this.props, { value: value }));
 
       if (search && _this.searchRef && selectFocusInput) _this.searchRef.focus();
+    }, _this.handleItemMouseEnter = function (e, item) {
+      var value = item.value;
+
+
+      _this.setSelectedIndex(value);
     }, _this.handleFocus = function (e) {
       var focus = _this.state.focus;
 
@@ -699,6 +704,7 @@ var Dropdown = function (_Component) {
         return DropdownItem.create(_extends({
           active: isActive(opt.value),
           onClick: _this.handleItemClick,
+          onMouseEnter: _this.handleItemMouseEnter,
           selected: selectedIndex === i
         }, opt, {
           key: getKeyOrValue(opt.key, opt.value),
