@@ -133,11 +133,19 @@ export default class Popup extends Component {
       PropTypes.bool,
       PropTypes.oneOf(['very']),
     ]),
+
+    /** hover interaction delay on mouse enter event  */
+    mouseEnterDelay: PropTypes.number,
+
+    /** hover interaction delay on mouse leave event  */
+    mouseLeaveDelay: PropTypes.number,
   }
 
   static defaultProps = {
     position: 'top left',
     on: 'hover',
+    mouseEnterDelay: 50,
+    mouseLeaveDelay: 70,
   }
 
   static _meta = {
@@ -282,8 +290,8 @@ export default class Popup extends Component {
       portalProps.openOnTriggerMouseEnter = true
       portalProps.closeOnTriggerMouseLeave = true
       // Taken from SUI: https://git.io/vPmCm
-      portalProps.mouseLeaveDelay = 70
-      portalProps.mouseEnterDelay = 50
+      portalProps.mouseLeaveDelay = this.props.mouseLeaveDelay
+      portalProps.mouseEnterDelay = this.props.mouseEnterDelay
     }
 
     return portalProps

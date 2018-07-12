@@ -96,6 +96,12 @@ export interface PopupProps extends PortalProps {
 
   /** Popup width. */
   wide?: boolean | 'very';
+
+  /** hover interaction delay on mouse enter event  */
+  mouseEnterDelay?: number,
+
+  /** hover interaction delay on mouse leave event  */
+  mouseLeaveDelay?: number,
 }
 
 interface PopupComponent extends React.ComponentClass<PopupProps> {
