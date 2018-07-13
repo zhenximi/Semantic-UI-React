@@ -1,7 +1,7 @@
 {
-  "name": "semantic-ui-react",
+  "name": "semantic-ui-react-mettel",
   "version": "0.78.2",
-  "description": "The official Semantic-UI-React integration.",
+  "description": "Bruin branch of Semantic UI React Dropwdown",
   "jsnext:main": "dist/es/index.js",
   "main": "dist/commonjs/index.js",
   "module": "dist/es/index.js",
@@ -45,10 +45,6 @@
     "tsd:lint": "tslint './index.d.ts' './src/**/*.d.ts' './src/**/*.tsx' './test/**/*.d.ts' './test/**/*.tsx'",
     "tsd:lint:fix": "yarn tsd:lint --fix",
     "tsd:test": "yarn tsd && tsc -p ./ && rm test/typings.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://github.com/Semantic-Org/Semantic-UI-React.git"
   },
   "author": "Levi Thomason <me@levithomason.com>",
   "license": "MIT",
