@@ -303,8 +303,8 @@ var Popup = function (_Component) {
         portalProps.openOnTriggerMouseEnter = true;
         portalProps.closeOnTriggerMouseLeave = true;
         // Taken from SUI: https://git.io/vPmCm
-        portalProps.mouseLeaveDelay = 70;
-        portalProps.mouseEnterDelay = 50;
+        portalProps.mouseLeaveDelay = this.props.mouseLeaveDelay;
+        portalProps.mouseEnterDelay = this.props.mouseEnterDelay;
       }
 
       return portalProps;
@@ -372,7 +372,9 @@ var Popup = function (_Component) {
 
 Popup.defaultProps = {
   position: 'top left',
-  on: 'hover'
+  on: 'hover',
+  mouseEnterDelay: 50,
+  mouseLeaveDelay: 70
 };
 Popup._meta = {
   name: 'Popup',
@@ -380,7 +382,7 @@ Popup._meta = {
 };
 Popup.Content = _PopupContent2.default;
 Popup.Header = _PopupHeader2.default;
-Popup.handledProps = ['as', 'basic', 'children', 'className', 'content', 'flowing', 'header', 'hideOnScroll', 'horizontalOffset', 'hoverable', 'inverted', 'on', 'onClose', 'onMount', 'onOpen', 'onUnmount', 'position', 'size', 'style', 'trigger', 'verticalOffset', 'wide'];
+Popup.handledProps = ['as', 'basic', 'children', 'className', 'content', 'flowing', 'header', 'hideOnScroll', 'horizontalOffset', 'hoverable', 'inverted', 'mouseEnterDelay', 'mouseLeaveDelay', 'on', 'onClose', 'onMount', 'onOpen', 'onUnmount', 'position', 'size', 'style', 'trigger', 'verticalOffset', 'wide'];
 exports.default = Popup;
 Popup.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
@@ -471,5 +473,11 @@ Popup.propTypes = process.env.NODE_ENV !== "production" ? {
   trigger: _propTypes2.default.node,
 
   /** Popup width. */
-  wide: _propTypes2.default.oneOfType([_propTypes2.default.bool, _propTypes2.default.oneOf(['very'])])
+  wide: _propTypes2.default.oneOfType([_propTypes2.default.bool, _propTypes2.default.oneOf(['very'])]),
+
+  /** hover interaction delay on mouse enter event  */
+  mouseEnterDelay: _propTypes2.default.number,
+
+  /** hover interaction delay on mouse leave event  */
+  mouseLeaveDelay: _propTypes2.default.number
 } : {};

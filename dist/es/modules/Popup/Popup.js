@@ -236,8 +236,8 @@ var Popup = function (_Component) {
         portalProps.openOnTriggerMouseEnter = true;
         portalProps.closeOnTriggerMouseLeave = true;
         // Taken from SUI: https://git.io/vPmCm
-        portalProps.mouseLeaveDelay = 70;
-        portalProps.mouseEnterDelay = 50;
+        portalProps.mouseLeaveDelay = this.props.mouseLeaveDelay;
+        portalProps.mouseEnterDelay = this.props.mouseEnterDelay;
       }
 
       return portalProps;
@@ -306,7 +306,9 @@ var Popup = function (_Component) {
 
 Popup.defaultProps = {
   position: 'top left',
-  on: 'hover'
+  on: 'hover',
+  mouseEnterDelay: 50,
+  mouseLeaveDelay: 70
 };
 Popup._meta = {
   name: 'Popup',
@@ -314,7 +316,7 @@ Popup._meta = {
 };
 Popup.Content = PopupContent;
 Popup.Header = PopupHeader;
-Popup.handledProps = ['as', 'basic', 'children', 'className', 'content', 'flowing', 'header', 'hideOnScroll', 'horizontalOffset', 'hoverable', 'inverted', 'on', 'onClose', 'onMount', 'onOpen', 'onUnmount', 'position', 'size', 'style', 'trigger', 'verticalOffset', 'wide'];
+Popup.handledProps = ['as', 'basic', 'children', 'className', 'content', 'flowing', 'header', 'hideOnScroll', 'horizontalOffset', 'hoverable', 'inverted', 'mouseEnterDelay', 'mouseLeaveDelay', 'on', 'onClose', 'onMount', 'onOpen', 'onUnmount', 'position', 'size', 'style', 'trigger', 'verticalOffset', 'wide'];
 export default Popup;
 Popup.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
@@ -405,5 +407,11 @@ Popup.propTypes = process.env.NODE_ENV !== "production" ? {
   trigger: PropTypes.node,
 
   /** Popup width. */
-  wide: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['very'])])
+  wide: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['very'])]),
+
+  /** hover interaction delay on mouse enter event  */
+  mouseEnterDelay: PropTypes.number,
+
+  /** hover interaction delay on mouse leave event  */
+  mouseLeaveDelay: PropTypes.number
 } : {};
