@@ -3,14 +3,14 @@ import _ from 'lodash'
 /**
  * Assert a component exposes other components as (static properties).
  * @param {React.Component|Function} Component The Component.
- * @param {React.Component[]} subComponents Array of components that should exist on Component.
+ * @param {React.Component[]} subcomponents Array of components that should exist on Component.
  */
-export default (Component, subComponents) => {
+export default (Component, subcomponents) => {
   const staticValues = _.values(Component)
 
-  _.each(subComponents, (subComponent) => {
-    it(`has sub component ${subComponent._meta.name}`, () => {
-      staticValues.should.contain(subComponent)
+  _.each(subcomponents, (subcomponent) => {
+    it(`has sub component ${_.get(subcomponent, 'prototype.constructor.name')}`, () => {
+      staticValues.should.contain(subcomponent)
     })
   })
 }

@@ -1,7 +1,9 @@
 import cx from 'classnames'
+import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Children, cloneElement } from 'react'
+import shallowEqual from 'shallowequal'
 
 import {
   AutoControlledComponent as Component,
@@ -11,11 +13,8 @@ import {
   eventStack,
   getElementType,
   getUnhandledProps,
-  keyboardKey,
   makeDebugger,
-  META,
   objectDiff,
-  shallowEqual,
   useKeyOnly,
   useKeyOrValueAndKey,
 } from '../../lib'
@@ -43,10 +42,7 @@ export default class Dropdown extends Component {
     as: customPropTypes.as,
 
     /** Label prefixed to an option added by a user. */
-    additionLabel: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.string,
-    ]),
+    additionLabel: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
 
     /** Position of the `Add: ...` option in the dropdown list ('top' or 'bottom'). */
     additionPosition: PropTypes.oneOf(['top', 'bottom']),
@@ -78,6 +74,9 @@ export default class Dropdown extends Component {
     /** Additional classes. */
     className: PropTypes.string,
 
+    /** Using the clearable setting will let users remove their selection from a dropdown. */
+    clearable: PropTypes.bool,
+
     /** Whether or not the menu should close when the dropdown is blurred. */
     closeOnBlur: PropTypes.bool,
 
@@ -103,21 +102,22 @@ export default class Dropdown extends Component {
     /** Currently selected label in multi-select. */
     defaultSelectedLabel: customPropTypes.every([
       customPropTypes.demand(['multiple']),
-      PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-      ]),
+      PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     ]),
+
+    /** Initial value of upward. */
+    defaultUpward: PropTypes.bool,
 
     /** Initial value or value array if multiple. */
     defaultValue: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
-      PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ])),
+      PropTypes.bool,
+      PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool])),
     ]),
+
+    /** A dropdown menu can open to the left or to the right. */
+    direction: PropTypes.oneOf(['left', 'right']),
 
     /** A disabled dropdown menu or item does not allow user interaction. */
     disabled: PropTypes.bool,
@@ -135,10 +135,7 @@ export default class Dropdown extends Component {
     header: PropTypes.node,
 
     /** Shorthand for Icon. */
-    icon: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.object,
-    ]),
+    icon: PropTypes.oneOfType([PropTypes.node, PropTypes.object]),
 
     /** A dropdown can be formatted to appear inline in other content. */
     inline: PropTypes.bool,
@@ -148,6 +145,9 @@ export default class Dropdown extends Component {
 
     /** A dropdown can be labeled. */
     labeled: PropTypes.bool,
+
+    /** A dropdown can defer rendering its options until it is open. */
+    lazyLoad: PropTypes.bool,
 
     /** A dropdown can show that it is currently loading data. */
     loading: PropTypes.bool,
@@ -159,7 +159,7 @@ export default class Dropdown extends Component {
     multiple: PropTypes.bool,
 
     /** Message to display when there are no results. */
-    noResultsMessage: PropTypes.string,
+    noResultsMessage: PropTypes.node,
 
     /**
      * Called when a user adds a new item. Use this to update the options list.
@@ -259,7 +259,16 @@ export default class Dropdown extends Component {
     /** A dropdown can be formatted so that its menu is pointing. */
     pointing: PropTypes.oneOfType([
       PropTypes.bool,
-      PropTypes.oneOf(['left', 'right', 'top', 'top left', 'top right', 'bottom', 'bottom left', 'bottom right']),
+      PropTypes.oneOf([
+        'left',
+        'right',
+        'top',
+        'top left',
+        'top right',
+        'bottom',
+        'bottom left',
+        'bottom right',
+      ]),
     ]),
 
     /**
@@ -280,17 +289,10 @@ export default class Dropdown extends Component {
      * A selection dropdown can allow a user to search through a large list of choices.
      * Pass a function here to replace the default search.
      */
-    search: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.func,
-    ]),
+    search: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
 
     /** A shorthand for a search input. */
-    searchInput: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.node,
-      PropTypes.object,
-    ]),
+    searchInput: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.object]),
 
     /** Current value of searchQuery. Creates a controlled component. */
     searchQuery: PropTypes.string,
@@ -309,10 +311,7 @@ export default class Dropdown extends Component {
     /** Currently selected label in multi-select. */
     selectedLabel: customPropTypes.every([
       customPropTypes.demand(['multiple']),
-      PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     ]),
 
     /** A dropdown can be used to select between choices in a form. */
@@ -326,10 +325,7 @@ export default class Dropdown extends Component {
     simple: PropTypes.bool,
 
     /** A dropdown can receive focus. */
-    tabIndex: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+    tabIndex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 
     /** The text displayed in the dropdown, usually for the active item. */
     text: PropTypes.string,
@@ -342,25 +338,20 @@ export default class Dropdown extends Component {
 
     /** Current value or value array if multiple. Creates a controlled component. */
     value: PropTypes.oneOfType([
+      PropTypes.bool,
       PropTypes.string,
       PropTypes.number,
-      PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ])),
+      PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.number])),
     ]),
 
-    /** A dropdown can open upward. */
+    /** Controls whether the dropdown will open upward. */
     upward: PropTypes.bool,
 
-    /** After an item is selected, the focus will be on the input search box. */
-    selectFocusInput: PropTypes.bool,
-
-    /** Default value for selectedIndex (if needed) */
-    defaultSelectedIndex: PropTypes.number,
-
-    /** Allows you to set the currently selected item by value */
-    selectedIndex: PropTypes.number,
+    /**
+     * A dropdown will go to the last element when ArrowUp is pressed on the first,
+     * or go to the first when ArrowDown is pressed on the last( aka infinite selection )
+     */
+    wrapSelection: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -376,21 +367,10 @@ export default class Dropdown extends Component {
     searchInput: 'text',
     selectOnBlur: true,
     selectOnNavigation: true,
-    selectFocusInput: false,
+    wrapSelection: true,
   }
 
-  static autoControlledProps = [
-    'open',
-    'searchQuery',
-    'selectedLabel',
-    'value',
-    'selectedIndex',
-  ]
-
-  static _meta = {
-    name: 'Dropdown',
-    type: META.TYPES.MODULE,
-  }
+  static autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value', 'upward']
 
   static Divider = DropdownDivider
   static Header = DropdownHeader
@@ -429,12 +409,12 @@ export default class Dropdown extends Component {
       if (hasValue && nextProps.multiple && !isNextValueArray) {
         console.error(
           'Dropdown `value` must be an array when `multiple` is set.' +
-          ` Received type: \`${Object.prototype.toString.call(nextProps.value)}\`.`,
+            ` Received type: \`${Object.prototype.toString.call(nextProps.value)}\`.`,
         )
       } else if (hasValue && !nextProps.multiple && isNextValueArray) {
         console.error(
           'Dropdown `value` must not be an array when `multiple` is not set.' +
-          ' Either set `multiple={true}` or use a string or number value.',
+            ' Either set `multiple={true}` or use a string or number value.',
         )
       }
     }
@@ -443,11 +423,16 @@ export default class Dropdown extends Component {
     if (!shallowEqual(nextProps.value, this.props.value)) {
       debug('value changed, setting', nextProps.value)
       this.setValue(nextProps.value)
-      this.setSelectedIndex(nextProps.value, nextProps.options, nextProps.searchQuery)
+      this.setSelectedIndex(nextProps.value)
     }
 
-    if (!_.isEqual(nextProps.options, this.props.options)) {
-      this.setSelectedIndex(undefined, nextProps.options, nextProps.searchQuery)
+    // The selected index is only dependent on option keys/values.
+    // We only check those properties to avoid recursive performance impacts.
+    // https://github.com/Semantic-Org/Semantic-UI-React/issues/3000
+    if (
+      !_.isEqual(this.getKeyAndValues(nextProps.options), this.getKeyAndValues(this.props.options))
+    ) {
+      this.setSelectedIndex(undefined, nextProps.options)
     }
   }
 
@@ -455,7 +440,8 @@ export default class Dropdown extends Component {
     return !shallowEqual(nextProps, this.props) || !shallowEqual(nextState, this.state)
   }
 
-  componentDidUpdate(prevProps, prevState) { // eslint-disable-line complexity
+  componentDidUpdate(prevProps, prevState) {
+    // eslint-disable-line complexity
     debug('componentDidUpdate()')
     debug('to state:', objectDiff(prevState, this.state))
 
@@ -464,7 +450,7 @@ export default class Dropdown extends Component {
       debug('dropdown focused')
       if (!this.isMouseDown) {
         const { minCharacters, openOnFocus, search } = this.props
-        const openable = !search || (search && minCharacters === 1)
+        const openable = !search || (search && minCharacters === 1 && !this.state.open)
 
         debug('mouse is not down, opening')
         if (openOnFocus && openable) this.open()
@@ -495,6 +481,7 @@ export default class Dropdown extends Component {
     if (!prevState.open && this.state.open) {
       debug('dropdown opened')
       this.attachHandlersOnOpen()
+      this.setOpenDirection()
       this.scrollSelectedItemIntoView()
     } else if (prevState.open && !this.state.open) {
       debug('dropdown closed')
@@ -538,9 +525,7 @@ export default class Dropdown extends Component {
 
   closeOnChange = (e) => {
     const { closeOnChange, multiple } = this.props
-    const shouldClose = _.isUndefined(closeOnChange)
-      ? !multiple
-      : closeOnChange
+    const shouldClose = _.isUndefined(closeOnChange) ? !multiple : closeOnChange
 
     if (shouldClose) this.close(e)
   }
@@ -552,7 +537,7 @@ export default class Dropdown extends Component {
   }
 
   moveSelectionOnKeyDown = (e) => {
-    debug('moveSelectionOnKeyDown()', keyboardKey.getName(e))
+    debug('moveSelectionOnKeyDown()', keyboardKey.getKey(e))
 
     const { multiple, selectOnNavigation } = this.props
     const moves = {
@@ -615,8 +600,8 @@ export default class Dropdown extends Component {
   }
 
   selectItemOnEnter = (e) => {
-    debug('selectItemOnEnter()', keyboardKey.getName(e))
-    const { search, selectFocusInput } = this.props
+    debug('selectItemOnEnter()', keyboardKey.getKey(e))
+    const { search } = this.props
 
     if (keyboardKey.getCode(e) !== keyboardKey.Enter) return
     e.preventDefault()
@@ -627,17 +612,11 @@ export default class Dropdown extends Component {
     this.makeSelectedItemActive(e)
     this.closeOnChange(e)
     this.clearSearchQuery()
-    if (this.searchRef) {
-      if (search && selectFocusInput) {
-        this.searchRef.focus()
-      } else {
-        this.searchRef.blur()
-      }
-    }
+    if (search && this.searchRef) this.searchRef.focus()
   }
 
   removeItemOnBackspace = (e) => {
-    debug('removeItemOnBackspace()', keyboardKey.getName(e))
+    debug('removeItemOnBackspace()', keyboardKey.getKey(e))
 
     const { multiple, search } = this.props
     const { searchQuery, value } = this.state
@@ -716,18 +695,25 @@ export default class Dropdown extends Component {
   }
 
   handleIconClick = (e) => {
-    debug('handleIconClick()', e)
+    const { clearable } = this.props
+    const hasValue = this.hasValue()
+    debug('handleIconClick()', { e, clearable, hasValue })
 
     _.invoke(this.props, 'onClick', e, this.props)
     // prevent handleClick()
     e.stopPropagation()
-    this.toggle(e)
+
+    if (clearable && hasValue) {
+      this.clearValue(e)
+    } else {
+      this.toggle(e)
+    }
   }
 
   handleItemClick = (e, item) => {
     debug('handleItemClick()', item)
 
-    const { multiple, search, selectFocusInput } = this.props
+    const { multiple, search } = this.props
     const { value } = item
 
     // prevent toggle() in handleClick()
@@ -743,8 +729,7 @@ export default class Dropdown extends Component {
     this.setValue(newValue)
     this.setSelectedIndex(value)
 
-    const optionSize = _.size(this.getMenuOptions(value))
-    if (!multiple || isAdditionItem || optionSize === 1) this.clearSearchQuery(value)
+    this.clearSearchQuery()
 
     this.handleChange(e, newValue)
     this.closeOnChange(e)
@@ -753,16 +738,8 @@ export default class Dropdown extends Component {
     // Notify the onAddItem prop if this is a new value
     if (isAdditionItem) _.invoke(this.props, 'onAddItem', e, { ...this.props, value })
 
-    if (search && this.searchRef && selectFocusInput) this.searchRef.focus()
+    if (multiple && search && this.searchRef) this.searchRef.focus()
   }
-
-    handleItemMouseEnter = (e, item) => {
-      debug('handleItemMouseEnter()', item)
-
-      const { value } = item
-
-      this.setSelectedIndex(value)
-    }
 
   handleFocus = (e) => {
     debug('handleFocus()')
@@ -782,14 +759,17 @@ export default class Dropdown extends Component {
     const currentTarget = _.get(e, 'currentTarget')
     if (currentTarget && currentTarget.contains(document.activeElement)) return
 
-    const { closeOnBlur, multiple, onBlur, selectOnBlur } = this.props
+    const { closeOnBlur, multiple, selectOnBlur } = this.props
     // do not "blur" when the mouse is down inside of the Dropdown
     if (this.isMouseDown) return
-    if (onBlur) onBlur(e, this.props)
+
+    _.invoke(this.props, 'onBlur', e, this.props)
+
     if (selectOnBlur && !multiple) {
       this.makeSelectedItemActive(e)
       if (closeOnBlur) this.close()
     }
+
     this.setState({ focus: false })
     this.clearSearchQuery()
   }
@@ -821,10 +801,14 @@ export default class Dropdown extends Component {
   // Getters
   // ----------------------------------------
 
+  getKeyAndValues = options =>
+    (options ? options.map(option => _.pick(option, ['key', 'value'])) : options)
+
   // There are times when we need to calculate the options based on a value
   // that hasn't yet been persisted to state.
-  getMenuOptions = (value = this.state.value, options = this.props.options, searchQuery = this.state.searchQuery) => {
+  getMenuOptions = (value = this.state.value, options = this.props.options) => {
     const { additionLabel, additionPosition, allowAdditions, deburr, multiple, search } = this.props
+    const { searchQuery } = this.state
 
     let filteredOptions = options
 
@@ -844,12 +828,18 @@ export default class Dropdown extends Component {
         const re = new RegExp(_.escapeRegExp(strippedQuery), 'i')
 
         filteredOptions = _.filter(filteredOptions, opt =>
-          re.test(deburr ? _.deburr(opt.text) : opt.text))
+          re.test(deburr ? _.deburr(opt.text) : opt.text),
+        )
       }
     }
 
     // insert the "add" item
-    if (allowAdditions && search && searchQuery && !_.some(filteredOptions, { text: searchQuery })) {
+    if (
+      allowAdditions &&
+      search &&
+      searchQuery &&
+      !_.some(filteredOptions, { text: searchQuery })
+    ) {
       const additionLabelElement = React.isValidElement(additionLabel)
         ? React.cloneElement(additionLabel, { key: 'addition-label' })
         : additionLabel || ''
@@ -858,10 +848,7 @@ export default class Dropdown extends Component {
         key: 'addition',
         // by using an array, we can pass multiple elements, but when doing so
         // we must specify a `key` for React to know which one is which
-        text: [
-          additionLabelElement,
-          <b key='addition-query'>{searchQuery}</b>,
-        ],
+        text: [additionLabelElement, <b key='addition-query'>{searchQuery}</b>],
         value: searchQuery,
         className: 'addition',
         'data-additional': true,
@@ -883,10 +870,14 @@ export default class Dropdown extends Component {
   getEnabledIndices = (givenOptions) => {
     const options = givenOptions || this.getMenuOptions()
 
-    return _.reduce(options, (memo, item, index) => {
-      if (!item.disabled) memo.push(index)
-      return memo
-    }, [])
+    return _.reduce(
+      options,
+      (memo, item, index) => {
+        if (!item.disabled) memo.push(index)
+        return memo
+      },
+      [],
+    )
   }
 
   getItemByValue = (value) => {
@@ -931,10 +922,9 @@ export default class Dropdown extends Component {
   // Setters
   // ----------------------------------------
 
-  clearSearchQuery = (value = this.state.value) => {
+  clearSearchQuery = () => {
     debug('clearSearchQuery()')
     this.trySetState({ searchQuery: '' })
-    this.setSelectedIndex(value, undefined, '')
   }
 
   setValue = (value) => {
@@ -942,13 +932,10 @@ export default class Dropdown extends Component {
     this.trySetState({ value })
   }
 
-  setSelectedIndex = (
-    value = this.state.value,
-    optionsProps = this.props.options,
-    searchQuery = this.state.searchQuery) => {
+  setSelectedIndex = (value = this.state.value, optionsProps = this.props.options) => {
     const { multiple } = this.props
     const { selectedIndex } = this.state
-    const options = this.getMenuOptions(value, optionsProps, searchQuery)
+    const options = this.getMenuOptions(value, optionsProps)
     const enabledIndicies = this.getEnabledIndices(options)
 
     let newSelectedIndex
@@ -978,7 +965,7 @@ export default class Dropdown extends Component {
     }
 
     if (!newSelectedIndex || newSelectedIndex < 0) {
-      newSelectedIndex = enabledIndicies[0] || 0;
+      newSelectedIndex = enabledIndicies[0]
     }
 
     this.setState({ selectedIndex: newSelectedIndex })
@@ -990,9 +977,7 @@ export default class Dropdown extends Component {
     e.stopPropagation()
 
     this.setState({ selectedLabel: labelProps.value })
-
-    const { onLabelClick } = this.props
-    if (onLabelClick) onLabelClick(e, labelProps)
+    _.invoke(this.props, 'onLabelClick', e, labelProps)
   }
 
   handleLabelRemove = (e, labelProps) => {
@@ -1022,10 +1007,15 @@ export default class Dropdown extends Component {
     if (options === undefined || _.every(options, 'disabled')) return
 
     const lastIndex = options.length - 1
+    const { wrapSelection } = this.props
     // next is after last, wrap to beginning
     // next is before first, wrap to end
     let nextIndex = startIndex + offset
-    if (nextIndex > lastIndex) nextIndex = 0
+
+    // if 'wrapSelection' is set to false and selection is after last or before first, it just does not change
+    if (!wrapSelection && (nextIndex > lastIndex || nextIndex < 0)) {
+      nextIndex = startIndex
+    } else if (nextIndex > lastIndex) nextIndex = 0
     else if (nextIndex < 0) nextIndex = lastIndex
 
     if (options[nextIndex].disabled) {
@@ -1041,12 +1031,18 @@ export default class Dropdown extends Component {
   // Overrides
   // ----------------------------------------
 
-  handleIconOverrides = predefinedProps => ({
-    onClick: (e) => {
-      _.invoke(predefinedProps, 'onClick', e, predefinedProps)
-      this.handleIconClick(e)
-    },
-  })
+  handleIconOverrides = (predefinedProps) => {
+    const { clearable } = this.props
+    const classes = cx(clearable && this.hasValue() && 'clear', predefinedProps.className)
+
+    return {
+      className: classes,
+      onClick: (e) => {
+        _.invoke(predefinedProps, 'onClick', e, predefinedProps)
+        this.handleIconClick(e)
+      },
+    }
+  }
 
   // ----------------------------------------
   // Refs
@@ -1061,6 +1057,15 @@ export default class Dropdown extends Component {
   // ----------------------------------------
   // Helpers
   // ----------------------------------------
+
+  clearValue = (e) => {
+    const { multiple } = this.props
+    const newValue = multiple ? [] : ''
+
+    this.setValue(newValue)
+    this.setSelectedIndex(newValue)
+    this.handleChange(e, newValue)
+  }
 
   computeSearchInputTabIndex = () => {
     const { disabled, tabIndex } = this.props
@@ -1093,6 +1098,20 @@ export default class Dropdown extends Component {
     return _.isNil(tabIndex) ? 0 : tabIndex
   }
 
+  handleSearchInputOverrides = predefinedProps => ({
+    onChange: (e, inputProps) => {
+      _.invoke(predefinedProps, 'onChange', e, inputProps)
+      this.handleSearchChange(e, inputProps)
+    },
+  })
+
+  hasValue = () => {
+    const { multiple } = this.props
+    const { value } = this.state
+
+    return multiple ? !_.isEmpty(value) : !_.isNil(value) && value !== ''
+  }
+
   // ----------------------------------------
   // Behavior
   // ----------------------------------------
@@ -1107,41 +1126,67 @@ export default class Dropdown extends Component {
     debug(`menu: ${menu}`)
     debug(`item: ${item}`)
     const isOutOfUpperView = item.offsetTop < menu.scrollTop
-    const isOutOfLowerView = (item.offsetTop + item.clientHeight) > menu.scrollTop + menu.clientHeight
+    const isOutOfLowerView = item.offsetTop + item.clientHeight > menu.scrollTop + menu.clientHeight
 
     if (isOutOfUpperView) {
       menu.scrollTop = item.offsetTop
     } else if (isOutOfLowerView) {
-      menu.scrollTop = (item.offsetTop + item.clientHeight) - menu.clientHeight
+      // eslint-disable-next-line no-mixed-operators
+      menu.scrollTop = item.offsetTop + item.clientHeight - menu.clientHeight
+    }
+  }
+
+  setOpenDirection = () => {
+    if (!this.ref) return
+
+    const menu = this.ref.querySelector('.menu.visible')
+
+    if (!menu) return
+
+    const dropdownRect = this.ref.getBoundingClientRect()
+    const menuHeight = menu.clientHeight
+    const spaceAtTheBottom =
+      document.documentElement.clientHeight - dropdownRect.top - dropdownRect.height - menuHeight
+    const spaceAtTheTop = dropdownRect.top - menuHeight
+
+    const upward = spaceAtTheBottom < 0 && spaceAtTheTop > spaceAtTheBottom
+
+    // set state only if there's a relevant difference
+    if (!upward !== !this.state.upward) {
+      this.trySetState({ upward })
     }
   }
 
   open = (e) => {
-    debug('open()')
+    const { disabled, open, search } = this.props
+    debug('open()', { disabled, open, search })
 
-    const { disabled, onOpen, search } = this.props
     if (disabled) return
     if (search && this.searchRef) this.searchRef.focus()
-    if (onOpen) onOpen(e, this.props)
+
+    _.invoke(this.props, 'onOpen', e, this.props)
 
     this.trySetState({ open: true })
     this.scrollSelectedItemIntoView()
   }
 
   close = (e) => {
-    debug('close()')
+    const { open } = this.state
+    debug('close()', { open })
 
-    const { onClose } = this.props
-    if (onClose) onClose(e, this.props)
-
-    this.trySetState({ open: false })
+    if (open) {
+      _.invoke(this.props, 'onClose', e, this.props)
+      this.trySetState({ open: false })
+    }
   }
 
   handleClose = () => {
     debug('handleClose()')
+
     const hasSearchFocus = document.activeElement === this.searchRef
     const hasDropdownFocus = document.activeElement === this.ref
     const hasFocus = hasSearchFocus || hasDropdownFocus
+
     // https://github.com/Semantic-Org/Semantic-UI-React/issues/627
     // Blur the Dropdown on close so it is blurred after selecting an item.
     // This is to prevent it from re-opening when switching tabs after selecting an item.
@@ -1162,10 +1207,8 @@ export default class Dropdown extends Component {
 
   renderText = () => {
     const { multiple, placeholder, search, text } = this.props
-    const { searchQuery, value } = this.state
-    const hasValue = multiple
-      ? !_.isEmpty(value)
-      : !_.isNil(value) && value !== ''
+    const { searchQuery, value, open } = this.state
+    const hasValue = this.hasValue()
 
     const classes = cx(
       placeholder && !hasValue && 'default',
@@ -1177,13 +1220,17 @@ export default class Dropdown extends Component {
       _text = null
     } else if (text) {
       _text = text
-    } else if (hasValue) {
-      _text = _.get(this.getItemByValue(value), 'text')
     } else if (open && !multiple) {
       _text = _.get(this.getSelectedItem(), 'text')
+    } else if (hasValue) {
+      _text = _.get(this.getItemByValue(value), 'text')
     }
 
-    return <div className={classes} role='alert' aria-live='polite'>{_text}</div>
+    return (
+      <div className={classes} role='alert' aria-live='polite'>
+        {_text}
+      </div>
+    )
   }
 
   renderSearchInput = () => {
@@ -1191,13 +1238,15 @@ export default class Dropdown extends Component {
     const { searchQuery } = this.state
 
     if (!search) return null
-    return DropdownSearchInput.create(searchInput, { defaultProps: {
-      inputRef: this.handleSearchRef,
-      onChange: this.handleSearchChange,
-      style: { width: this.computeSearchInputWidth() },
-      tabIndex: this.computeSearchInputTabIndex(),
-      value: searchQuery,
-    } })
+    return DropdownSearchInput.create(searchInput, {
+      defaultProps: {
+        inputRef: this.handleSearchRef,
+        style: { width: this.computeSearchInputWidth() },
+        tabIndex: this.computeSearchInputTabIndex(),
+        value: searchQuery,
+      },
+      overrideProps: this.handleSearchInputOverrides,
+    })
   }
 
   renderSearchSizer = () => {
@@ -1229,16 +1278,17 @@ export default class Dropdown extends Component {
         value: item.value,
       }
 
-      return Label.create(
-        renderLabel(item, index, defaultProps),
-        { defaultProps },
-      )
+      return Label.create(renderLabel(item, index, defaultProps), { defaultProps })
     })
   }
 
   renderOptions = () => {
-    const { multiple, search, noResultsMessage } = this.props
-    const { selectedIndex, value } = this.state
+    const { lazyLoad, multiple, search, noResultsMessage } = this.props
+    const { open, selectedIndex, value } = this.state
+
+    // lazy load, only render options when open
+    if (lazyLoad && !open) return null
+
     const options = this.getMenuOptions()
 
     if (noResultsMessage !== null && search && _.isEmpty(options)) {
@@ -1249,35 +1299,35 @@ export default class Dropdown extends Component {
       ? optValue => _.includes(value, optValue)
       : optValue => optValue === value
 
-    return _.map(options, (opt, i) => DropdownItem.create({
-      active: isActive(opt.value),
-      onClick: this.handleItemClick,
-      onMouseEnter: this.handleItemMouseEnter,
-      selected: selectedIndex === i,
-      ...opt,
-      key: getKeyOrValue(opt.key, opt.value),
-      // Needed for handling click events on disabled items
-      style: { ...opt.style, pointerEvents: 'all' },
-    }))
+    return _.map(options, (opt, i) =>
+      DropdownItem.create({
+        active: isActive(opt.value),
+        onClick: this.handleItemClick,
+        selected: selectedIndex === i,
+        ...opt,
+        key: getKeyOrValue(opt.key, opt.value),
+        // Needed for handling click events on disabled items
+        style: { ...opt.style, pointerEvents: 'all' },
+      }),
+    )
   }
 
   renderMenu = () => {
-    const { children, header } = this.props
+    const { children, direction, header } = this.props
     const { open } = this.state
-    const menuClasses = open ? 'visible' : ''
     const ariaOptions = this.getDropdownMenuAriaOptions()
 
     // single menu child
     if (!childrenUtils.isNil(children)) {
       const menuChild = Children.only(children)
-      const className = cx(menuClasses, menuChild.props.className)
+      const className = cx(direction, useKeyOnly(open, 'visible'), menuChild.props.className)
 
       return cloneElement(menuChild, { className, ...ariaOptions })
     }
 
     return (
-      <DropdownMenu {...ariaOptions} className={menuClasses}>
-        {DropdownHeader.create(header)}
+      <DropdownMenu {...ariaOptions} direction={direction} open={open}>
+        {DropdownHeader.create(header, { autoGenerateKey: false })}
         {this.renderOptions()}
       </DropdownMenu>
     )
@@ -1309,9 +1359,8 @@ export default class Dropdown extends Component {
       scrolling,
       simple,
       trigger,
-      upward,
     } = this.props
-    const { open } = this.state
+    const { open, upward } = this.state
 
     // Classes
     const classes = cx(
@@ -1367,6 +1416,7 @@ export default class Dropdown extends Component {
         {trigger || this.renderText()}
         {Icon.create(icon, {
           overrideProps: this.handleIconOverrides,
+          autoGenerateKey: false,
         })}
         {this.renderMenu()}
       </ElementType>

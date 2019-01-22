@@ -3,13 +3,7 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { cloneElement, Component } from 'react'
 
-import {
-  makeDebugger,
-  META,
-  normalizeTransitionDuration,
-  SUI,
-  useKeyOnly,
-} from '../../lib'
+import { makeDebugger, normalizeTransitionDuration, SUI, useKeyOnly } from '../../lib'
 import TransitionGroup from './TransitionGroup'
 
 const debug = makeDebugger('transition')
@@ -97,11 +91,6 @@ export default class Transition extends Component {
     unmountOnHide: false,
   }
 
-  static _meta = {
-    name: 'Transition',
-    type: META.TYPES.MODULE,
-  }
-
   static ENTERED = 'ENTERED'
   static ENTERING = 'ENTERING'
   static EXITED = 'EXITED'
@@ -125,7 +114,6 @@ export default class Transition extends Component {
   componentDidMount() {
     debug('componentDidMount()')
 
-    this.mounted = true
     this.updateStatus()
   }
 
@@ -135,7 +123,7 @@ export default class Transition extends Component {
     const { current: status, next } = this.computeStatuses(nextProps)
 
     this.nextStatus = next
-    if (status) this.setSafeState({ status })
+    if (status) this.setState({ status })
   }
 
   componentDidUpdate() {
@@ -147,7 +135,7 @@ export default class Transition extends Component {
   componentWillUnmount() {
     debug('componentWillUnmount()')
 
-    this.mounted = false
+    clearTimeout(this.timeoutId)
   }
 
   // ----------------------------------------
@@ -159,12 +147,12 @@ export default class Transition extends Component {
     const status = this.nextStatus
 
     this.nextStatus = null
-    this.setSafeState({ status, animating: true }, () => {
+    this.setState({ status, animating: true }, () => {
       const durationType = TRANSITION_TYPE[status]
       const durationValue = normalizeTransitionDuration(duration, durationType)
 
       _.invoke(this.props, 'onStart', null, { ...this.props, status })
-      setTimeout(this.handleComplete, durationValue)
+      this.timeoutId = setTimeout(this.handleComplete, durationValue)
     })
   }
 
@@ -181,7 +169,7 @@ export default class Transition extends Component {
     const status = this.computeCompletedStatus()
     const callback = current === Transition.ENTERING ? 'onShow' : 'onHide'
 
-    this.setSafeState({ status, animating: false }, () => {
+    this.setState({ status, animating: false }, () => {
       _.invoke(this.props, callback, null, { ...this.props, status })
     })
   }
@@ -219,11 +207,7 @@ export default class Transition extends Component {
       )
     }
 
-    return cx(
-      animation,
-      childClasses,
-      useKeyOnly(animating, 'animating transition'),
-    )
+    return cx(animation, childClasses, useKeyOnly(animating, 'animating transition'))
   }
 
   computeCompletedStatus = () => {
@@ -235,12 +219,7 @@ export default class Transition extends Component {
   }
 
   computeInitialStatuses = () => {
-    const {
-      visible,
-      mountOnShow,
-      transitionOnMount,
-      unmountOnHide,
-    } = this.props
+    const { visible, mountOnShow, transitionOnMount, unmountOnHide } = this.props
 
     if (visible) {
       if (transitionOnMount) {
@@ -270,7 +249,8 @@ export default class Transition extends Component {
     if (visible) {
       return {
         current: status === Transition.UNMOUNTED && Transition.EXITED,
-        next: (status !== Transition.ENTERING && status !== Transition.ENTERED) && Transition.ENTERING,
+        next:
+          status !== Transition.ENTERING && status !== Transition.ENTERED && Transition.ENTERING,
       }
     }
 
@@ -289,8 +269,6 @@ export default class Transition extends Component {
 
     return { ...childStyle, animationDuration }
   }
-
-  setSafeState = (...args) => this.mounted && this.setState(...args)
 
   // ----------------------------------------
   // Render

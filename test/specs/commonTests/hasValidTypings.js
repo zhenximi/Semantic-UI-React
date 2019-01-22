@@ -1,20 +1,18 @@
 import _ from 'lodash'
-import path from 'path'
 
 import { customPropTypes } from 'src/lib'
-import componentInfo from './componentInfo'
-import {
-  getNodes,
-  getInterfaces,
-  hasAnySignature,
-  requireTs,
-} from './tsHelpers'
+import { componentInfoContext } from 'docs/src/utils'
+import { getNodes, getInterfaces, hasAnySignature, requireTs } from './tsHelpers'
 
-const isShorthand = propType => _.includes([
-  customPropTypes.collectionShorthand,
-  customPropTypes.contentShorthand,
-  customPropTypes.itemShorthand,
-], propType)
+const isShorthand = propType =>
+  _.includes(
+    [
+      customPropTypes.collectionShorthand,
+      customPropTypes.contentShorthand,
+      customPropTypes.itemShorthand,
+    ],
+    propType,
+  )
 const shorthandMap = {
   SemanticShorthandContent: customPropTypes.contentShorthand,
   SemanticShorthandItem: customPropTypes.itemShorthand,
@@ -24,22 +22,17 @@ const shorthandMap = {
 /**
  * Assert Component has the valid typings.
  * @param {React.Component|Function} Component A component that should conform.
- * @param {Object} [extractedInfo={}]
- * @param {Object} [extractedInfo._meta={}] The meta information about Component
+ * @param {Object} [componentInfo] The *.info.json for the Component
  * @param {Object} [options={}]
  * @param {array} [options.ignoredTypingsProps=[]] Props that will be ignored in tests.
  * @param {Object} [options.requiredProps={}] Props required to render Component without errors or warnings.
  */
-export default (Component, extractedInfo, options = {}) => {
-  const {
-    _meta: { name: componentName },
-    filenameWithoutExt,
-    filePath,
-  } = extractedInfo || _.find(componentInfo, i => i.constructorName === Component.prototype.constructor.name)
+export default (Component, componentInfo, options = {}) => {
+  const { displayName, repoPath } = componentInfoContext.fromComponent(Component)
   const { ignoredTypingsProps = [], requiredProps } = options
 
-  const tsFile = `${filenameWithoutExt}.d.ts`
-  const tsContent = requireTs(path.join(path.dirname(filePath), tsFile))
+  const tsFile = repoPath.replace('src/', '').replace('.js', '.d.ts')
+  const tsContent = requireTs(tsFile)
 
   describe('typings', () => {
     describe('structure', () => {
@@ -49,28 +42,43 @@ export default (Component, extractedInfo, options = {}) => {
     })
 
     const tsNodes = getNodes(tsFile, tsContent)
-    const interfaceName = `${componentName}Props`
-    const interfaceObject = _.find(getInterfaces(tsNodes), { name: interfaceName }) || {}
 
-    describe(`interface ${interfaceName}`, () => {
+    const propsInterfaceName = `${displayName}Props`
+    const strictInterfaceName = `Strict${displayName}Props`
+
+    const propsInterfaceObject = _.find(getInterfaces(tsNodes), { name: propsInterfaceName })
+    const strictInterfaceObject = _.find(getInterfaces(tsNodes), { name: strictInterfaceName })
+
+    describe(`interface ${propsInterfaceName}`, () => {
       it('has interface', () => {
-        interfaceObject.should.to.be.an('object')
+        propsInterfaceObject.should.to.be.an('object')
       })
 
       it('is exported', () => {
-        const { exported } = interfaceObject
+        const { exported } = propsInterfaceObject
+        exported.should.to.equal(true)
+      })
+    })
+
+    describe(`interface ${strictInterfaceName}`, () => {
+      it('has interface', () => {
+        strictInterfaceObject.should.to.be.an('object')
+      })
+
+      it('is exported', () => {
+        const { exported } = strictInterfaceObject
         exported.should.to.equal(true)
       })
     })
 
     describe('props', () => {
-      const { props } = interfaceObject
+      const { props } = strictInterfaceObject
 
       it('has any signature', () => {
         hasAnySignature(tsNodes).should.to.equal(true)
       })
 
-      it('are correctly defined', () => {
+      it('match the typings interface', () => {
         const componentPropTypes = _.get(Component, 'propTypes')
         const componentProps = _.keys(componentPropTypes)
         const interfaceProps = _.without(_.map(props, 'name'), ...ignoredTypingsProps)
@@ -94,7 +102,7 @@ export default (Component, extractedInfo, options = {}) => {
         })
       })
 
-      it('only necessary are required', () => {
+      it('isRequired props match required typings', () => {
         const componentRequired = _.keys(requiredProps)
         const interfaceRequired = _.map(_.filter(props, ['required', true]), 'name')
 
@@ -115,7 +123,7 @@ export default (Component, extractedInfo, options = {}) => {
     })
 
     describe('shorthands', () => {
-      const { shorthands } = interfaceObject
+      const { shorthands } = strictInterfaceObject
       const componentPropTypes = _.get(Component, 'propTypes')
       const componentShorthands = _.pickBy(componentPropTypes, isShorthand)
 

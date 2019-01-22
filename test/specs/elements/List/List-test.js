@@ -13,7 +13,14 @@ import { sandbox } from 'test/utils'
 
 describe('List', () => {
   common.isConformant(List)
-  common.hasSubComponents(List, [ListContent, ListDescription, ListHeader, ListIcon, ListItem, ListList])
+  common.hasSubcomponents(List, [
+    ListContent,
+    ListDescription,
+    ListHeader,
+    ListIcon,
+    ListItem,
+    ListList,
+  ])
   common.hasUIClassName(List)
   common.rendersChildren(List)
 
@@ -68,14 +75,31 @@ describe('List', () => {
   describe('role', () => {
     it('is accessibile with no items', () => {
       const wrapper = shallow(<List />)
-
       wrapper.should.have.prop('role', 'list')
     })
 
     it('is accessibile with items', () => {
       const wrapper = shallow(<List items={items} />)
-
       wrapper.should.have.prop('role', 'list')
+    })
+
+    it('allows overriding with no items', () => {
+      const wrapper = shallow(<List role='listbox' />)
+      wrapper.should.have.prop('role', 'listbox')
+    })
+
+    it('allows overriding with items', () => {
+      const wrapper = shallow(<List role='listbox' items={items} />)
+      wrapper.should.have.prop('role', 'listbox')
+    })
+
+    it('allows overriding with children', () => {
+      const wrapper = shallow(
+        <List role='listbox'>
+          <ListItem />
+        </List>,
+      )
+      wrapper.should.have.prop('role', 'listbox')
     })
   })
 

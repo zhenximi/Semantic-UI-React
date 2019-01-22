@@ -11,16 +11,18 @@ import * as common from 'test/specs/commonTests'
 describe('Statistic', () => {
   common.isConformant(Statistic)
   common.implementsCreateMethod(Statistic)
-  common.hasSubComponents(Statistic, [StatisticGroup, StatisticLabel, StatisticValue])
+  common.hasSubcomponents(Statistic, [StatisticGroup, StatisticLabel, StatisticValue])
   common.hasUIClassName(Statistic)
   common.rendersChildren(Statistic)
 
   common.implementsShorthandProp(Statistic, {
+    autoGenerateKey: false,
     propKey: 'label',
     ShorthandComponent: StatisticLabel,
     mapValueToProps: content => ({ content }),
   })
   common.implementsShorthandProp(Statistic, {
+    autoGenerateKey: false,
     propKey: 'value',
     ShorthandComponent: StatisticValue,
     mapValueToProps: content => ({ content }),
@@ -35,7 +37,11 @@ describe('Statistic', () => {
   common.propKeyOnlyToClassName(Statistic, 'inverted')
 
   common.propValueOnlyToClassName(Statistic, 'color', SUI.COLORS)
-  common.propValueOnlyToClassName(Statistic, 'size', _.without(SUI.SIZES, 'big', 'massive', 'medium'))
+  common.propValueOnlyToClassName(
+    Statistic,
+    'size',
+    _.without(SUI.SIZES, 'big', 'massive', 'medium'),
+  )
 
   describe('text', () => {
     it('passes value to StatisticValue', () => {
@@ -46,4 +52,3 @@ describe('Statistic', () => {
     })
   })
 })
-

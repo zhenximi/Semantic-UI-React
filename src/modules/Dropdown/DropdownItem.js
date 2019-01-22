@@ -8,7 +8,6 @@ import {
   createShorthand,
   createShorthandFactory,
   customPropTypes,
-  META,
   getElementType,
   getUnhandledProps,
   useKeyOnly,
@@ -65,14 +64,6 @@ class DropdownItem extends Component {
     onClick: PropTypes.func,
 
     /**
-     * Called on mouseEnter.
-     *
-     * @param {SyntheticEvent} event - React's original SyntheticEvent.
-     * @param {object} data - All props.
-     */
-    onMouseEnter: PropTypes.func,
-
-    /**
      * The item currently selected by keyboard shortcut.
      * This is not the active item.
      */
@@ -82,28 +73,13 @@ class DropdownItem extends Component {
     text: customPropTypes.contentShorthand,
 
     /** Stored value. */
-    value: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
-  }
-
-  static _meta = {
-    name: 'DropdownItem',
-    parent: 'Dropdown',
-    type: META.TYPES.MODULE,
+    value: PropTypes.oneOfType([PropTypes.bool, PropTypes.number, PropTypes.string]),
   }
 
   handleClick = (e) => {
     const { onClick } = this.props
 
     if (onClick) onClick(e, this.props)
-  }
-
-  handleMouseEnter = (e) => {
-    const { onMouseEnter } = this.props
-
-    if (onMouseEnter) onMouseEnter(e, this.props)
   }
 
   render() {
@@ -130,7 +106,9 @@ class DropdownItem extends Component {
       className,
     )
     // add default dropdown icon if item contains another menu
-    const iconName = _.isNil(icon) ? childrenUtils.someByType(children, 'DropdownMenu') && 'dropdown' : icon
+    const iconName = _.isNil(icon)
+      ? childrenUtils.someByType(children, 'DropdownMenu') && 'dropdown'
+      : icon
     const rest = getUnhandledProps(DropdownItem, this.props)
     const ElementType = getElementType(DropdownItem, this.props)
     const ariaOptions = {
@@ -142,31 +120,29 @@ class DropdownItem extends Component {
 
     if (!childrenUtils.isNil(children)) {
       return (
-        <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick} onMouseEnter={this.handleMouseEnter}>
+        <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick}>
           {children}
         </ElementType>
       )
     }
 
-    const flagElement = Flag.create(flag)
-    const iconElement = Icon.create(iconName)
-    const imageElement = Image.create(image)
-    const labelElement = Label.create(label)
-    const descriptionElement = createShorthand(
-      'span',
-      val => ({ children: val }),
-      description,
-      { defaultProps: { className: 'description' } },
-    )
+    const flagElement = Flag.create(flag, { autoGenerateKey: false })
+    const iconElement = Icon.create(iconName, { autoGenerateKey: false })
+    const imageElement = Image.create(image, { autoGenerateKey: false })
+    const labelElement = Label.create(label, { autoGenerateKey: false })
+    const descriptionElement = createShorthand('span', val => ({ children: val }), description, {
+      defaultProps: { className: 'description' },
+      autoGenerateKey: false,
+    })
     const textElement = createShorthand(
       'span',
       val => ({ children: val }),
       childrenUtils.isNil(content) ? text : content,
-      { defaultProps: { className: 'text' } },
+      { defaultProps: { className: 'text' }, autoGenerateKey: false },
     )
 
     return (
-      <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick} onMouseEnter={this.handleMouseEnter}>
+      <ElementType {...rest} {...ariaOptions} className={classes} onClick={this.handleClick}>
         {imageElement}
         {iconElement}
         {flagElement}

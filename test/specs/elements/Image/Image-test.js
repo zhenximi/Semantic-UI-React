@@ -3,19 +3,20 @@ import React from 'react'
 
 import Image from 'src/elements/Image/Image'
 import ImageGroup from 'src/elements/Image/ImageGroup'
-import { SUI } from 'src/lib'
+import { htmlImageProps, SUI } from 'src/lib'
 import Dimmer from 'src/modules/Dimmer/Dimmer'
 import * as common from 'test/specs/commonTests'
 
 describe('Image', () => {
   common.isConformant(Image)
-  common.hasSubComponents(Image, [ImageGroup])
+  common.hasSubcomponents(Image, [ImageGroup])
   common.hasUIClassName(Image)
   common.rendersChildren(Image)
 
   common.implementsCreateMethod(Image)
-  common.implementsLabelProp(Image)
+  common.implementsLabelProp(Image, { autoGenerateKey: false })
   common.implementsShorthandProp(Image, {
+    autoGenerateKey: false,
     propKey: 'dimmer',
     ShorthandComponent: Dimmer,
     mapValueToProps: val => ({ content: val }),
@@ -55,7 +56,7 @@ describe('Image', () => {
   })
 
   describe('image props', () => {
-    _.forEach(['alt', 'height', 'src', 'srcSet', 'width'], (propName) => {
+    _.forEach(htmlImageProps, (propName) => {
       it(`keeps "${propName}" on root element by default`, () => {
         const wrapper = shallow(<Image {...{ [propName]: 'foo' }} />)
 
@@ -77,12 +78,10 @@ describe('Image', () => {
       Image.defaultProps.ui.should.equal(true)
     })
     it('adds the "ui" className when true', () => {
-      shallow(<Image ui />)
-        .should.have.className('ui')
+      shallow(<Image ui />).should.have.className('ui')
     })
     it('removes the "ui" className when false', () => {
-      shallow(<Image ui={false} />)
-        .should.not.have.className('ui')
+      shallow(<Image ui={false} />).should.not.have.className('ui')
     })
   })
 

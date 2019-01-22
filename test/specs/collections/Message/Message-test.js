@@ -11,24 +11,27 @@ import { sandbox } from 'test/utils'
 
 describe('Message', () => {
   common.isConformant(Message)
-  common.hasSubComponents(Message, [MessageContent, MessageHeader, MessageList])
+  common.hasSubcomponents(Message, [MessageContent, MessageHeader, MessageList])
   common.hasUIClassName(Message)
   common.rendersChildren(Message, {
     rendersContent: false,
   })
 
-  common.implementsIconProp(Message)
+  common.implementsIconProp(Message, { autoGenerateKey: false })
   common.implementsShorthandProp(Message, {
+    autoGenerateKey: false,
     propKey: 'content',
     ShorthandComponent: 'p',
     mapValueToProps: val => ({ children: val }),
   })
   common.implementsShorthandProp(Message, {
+    autoGenerateKey: false,
     propKey: 'header',
     ShorthandComponent: MessageHeader,
     mapValueToProps: val => ({ content: val }),
   })
   common.implementsShorthandProp(Message, {
+    autoGenerateKey: false,
     propKey: 'list',
     ShorthandComponent: MessageList,
     mapValueToProps: val => ({ items: val }),
@@ -53,44 +56,37 @@ describe('Message', () => {
 
   describe('header', () => {
     it('adds MessageContent when defined', () => {
-      shallow(<Message header='This is a message' />)
-        .should.have.descendants('MessageContent')
+      shallow(<Message header='This is a message' />).should.have.descendants('MessageContent')
     })
   })
 
   describe('icon', () => {
     it('does not have MessageContent by default', () => {
-      shallow(<Message />)
-        .should.not.have.descendants('.content')
+      shallow(<Message />).should.not.have.descendants('.content')
     })
     it('renders children when "true"', () => {
       const text = 'child text'
       const node = <div id='foo' />
 
-      shallow(<Message icon>{text}</Message>)
-        .should.have.text(text)
+      shallow(<Message icon>{text}</Message>).should.have.text(text)
 
-      shallow(<Message icon>{node}</Message>)
-        .should.contain(node)
+      shallow(<Message icon>{node}</Message>).should.contain(node)
     })
   })
 
   describe('list', () => {
     it('adds MessageContent when defined', () => {
-      shallow(<Message list={[]} />)
-        .should.have.descendants('MessageContent')
+      shallow(<Message list={[]} />).should.have.descendants('MessageContent')
     })
   })
 
   describe('onDismiss', () => {
     it('has no close icon by default', () => {
-      shallow(<Message />)
-        .should.not.have.descendants('.close.icon')
+      shallow(<Message />).should.not.have.descendants('.close.icon')
     })
 
     it('adds a close icon when defined', () => {
-      render(<Message onDismiss={() => undefined} />)
-        .should.have.descendants('.close.icon')
+      render(<Message onDismiss={() => undefined} />).should.have.descendants('.close.icon')
     })
 
     it('is called with (event) on close icon click', () => {
@@ -101,8 +97,7 @@ describe('Message', () => {
       const wrapper = mount(<Message {...props} onDismiss={spy} />)
 
       wrapper.should.have.descendants('.close.icon')
-      wrapper.find('.close.icon')
-        .simulate('click', event)
+      wrapper.find('.close.icon').simulate('click', event)
 
       spy.should.have.been.calledOnce()
       spy.should.have.been.calledWithMatch(event, props)
