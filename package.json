@@ -60,10 +60,6 @@
       "git add"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://github.com/Semantic-Org/Semantic-UI-React.git"
-  },
   "author": "Levi Thomason <me@levithomason.com>",
   "license": "MIT",
   "bugs": {
