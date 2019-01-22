@@ -42,6 +42,11 @@ function (_Component) {
       if (onClick) onClick(e, _this.props);
     });
 
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleMouseEnter", function (e) {
+      var onMouseEnter = _this.props.onMouseEnter;
+      if (onMouseEnter) onMouseEnter(e, _this.props);
+    });
+
     return _this;
   }
 
@@ -76,7 +81,8 @@ function (_Component) {
       if (!childrenUtils.isNil(children)) {
         return React.createElement(ElementType, _extends({}, rest, ariaOptions, {
           className: classes,
-          onClick: this.handleClick
+          onClick: this.handleClick,
+          onMouseEnter: this.handleMouseEnter
         }), children);
       }
 
@@ -114,7 +120,8 @@ function (_Component) {
       });
       return React.createElement(ElementType, _extends({}, rest, ariaOptions, {
         className: classes,
-        onClick: this.handleClick
+        onClick: this.handleClick,
+        onMouseEnter: this.handleMouseEnter
       }), imageElement, iconElement, flagElement, labelElement, descriptionElement, textElement);
     }
   }]);
@@ -122,7 +129,7 @@ function (_Component) {
   return DropdownItem;
 }(Component);
 
-_defineProperty(DropdownItem, "handledProps", ["active", "as", "children", "className", "content", "description", "disabled", "flag", "icon", "image", "label", "onClick", "selected", "text", "value"]);
+_defineProperty(DropdownItem, "handledProps", ["active", "as", "children", "className", "content", "description", "disabled", "flag", "icon", "image", "label", "onClick", "onMouseEnter", "selected", "text", "value"]);
 
 DropdownItem.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
@@ -165,6 +172,14 @@ DropdownItem.propTypes = process.env.NODE_ENV !== "production" ? {
    * @param {object} data - All props.
    */
   onClick: PropTypes.func,
+
+  /**
+   * Called on mouseEnter.
+   *
+   * @param {SyntheticEvent} event - React's original SyntheticEvent.
+   * @param {object} data - All props.
+   */
+  onMouseEnter: PropTypes.func,
 
   /**
    * The item currently selected by keyboard shortcut.

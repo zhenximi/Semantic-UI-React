@@ -342,6 +342,11 @@ function (_Component) {
       }));
       if (search && _this.searchRef && selectFocusInput) _this.searchRef.focus();
     });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "handleItemMouseEnter", function (e, item) {
+      var value = item.value;
+
+      _this.setSelectedIndex(value);
+    });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "handleFocus", function (e) {
       var focus = _this.state.focus;
       if (focus) return;
@@ -781,7 +786,8 @@ function (_Component) {
           text = _this$props13.text;
       var _this$state3 = _this.state,
           searchQuery = _this$state3.searchQuery,
-          value = _this$state3.value;
+          value = _this$state3.value,
+          open = _this$state3.open;
 
       var hasValue = _this.hasValue();
 
@@ -891,6 +897,7 @@ function (_Component) {
         return _DropdownItem.default.create((0, _objectSpread2.default)({
           active: isActive(opt.value),
           onClick: _this.handleItemClick,
+          onMouseEnter: _this.handleItemMouseEnter,
           selected: selectedIndex === i
         }, opt, {
           key: getKeyOrValue(opt.key, opt.value),

@@ -1234,7 +1234,7 @@ export default class Dropdown extends Component {
 
   renderText = () => {
     const { multiple, placeholder, search, text } = this.props
-    const { searchQuery, value } = this.state
+    const { searchQuery, value, open } = this.state
     const hasValue = this.hasValue()
 
     const classes = cx(

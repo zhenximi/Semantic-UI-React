@@ -297,8 +297,8 @@ function (_Component) {
         portalProps.openOnTriggerMouseEnter = true;
         portalProps.closeOnTriggerMouseLeave = true; // Taken from SUI: https://git.io/vPmCm
 
-        portalProps.mouseLeaveDelay = 70;
-        portalProps.mouseEnterDelay = 50;
+        portalProps.mouseLeaveDelay = this.props.mouseLeaveDelay;
+        portalProps.mouseEnterDelay = this.props.mouseEnterDelay;
       }
 
       return portalProps;
@@ -365,14 +365,16 @@ function (_Component) {
 _defineProperty(Popup, "defaultProps", {
   position: 'top left',
   on: 'hover',
-  keepInViewPort: true
+  keepInViewPort: true,
+  mouseEnterDelay: 50,
+  mouseLeaveDelay: 70
 });
 
 _defineProperty(Popup, "Content", PopupContent);
 
 _defineProperty(Popup, "Header", PopupHeader);
 
-_defineProperty(Popup, "handledProps", ["as", "basic", "children", "className", "content", "context", "flowing", "header", "hideOnScroll", "horizontalOffset", "hoverable", "inverted", "keepInViewPort", "on", "onClose", "onMount", "onOpen", "onUnmount", "position", "size", "style", "trigger", "verticalOffset", "wide"]);
+_defineProperty(Popup, "handledProps", ["as", "basic", "children", "className", "content", "context", "flowing", "header", "hideOnScroll", "horizontalOffset", "hoverable", "inverted", "keepInViewPort", "mouseEnterDelay", "mouseLeaveDelay", "on", "onClose", "onMount", "onOpen", "onUnmount", "position", "size", "style", "trigger", "verticalOffset", "wide"]);
 
 export { Popup as default };
 Popup.propTypes = process.env.NODE_ENV !== "production" ? {
@@ -470,5 +472,11 @@ Popup.propTypes = process.env.NODE_ENV !== "production" ? {
   wide: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['very'])]),
 
   /** Element to be rendered within the confines of the viewport whenever possible. */
-  keepInViewPort: PropTypes.bool
+  keepInViewPort: PropTypes.bool,
+
+  /** hover interaction delay on mouse enter event  */
+  mouseEnterDelay: PropTypes.number,
+
+  /** hover interaction delay on mouse leave event  */
+  mouseLeaveDelay: PropTypes.number
 } : {};
