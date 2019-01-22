@@ -109,6 +109,12 @@ export interface StrictPopupProps extends StrictPortalProps {
 
   /** Element to be rendered within the confines of the viewport whenever possible. */
   keepInViewPort?: boolean
+
+  /** hover interaction delay on mouse enter event  */
+  mouseEnterDelay?: number,
+
+  /** hover interaction delay on mouse leave event  */
+  mouseLeaveDelay?: number,
 }
 
 interface PopupComponent extends React.ComponentClass<PopupProps> {

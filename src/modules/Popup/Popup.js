@@ -135,12 +135,20 @@ export default class Popup extends Component {
 
     /** Element to be rendered within the confines of the viewport whenever possible. */
     keepInViewPort: PropTypes.bool,
+
+    /** hover interaction delay on mouse enter event  */
+    mouseEnterDelay: PropTypes.number,
+
+    /** hover interaction delay on mouse leave event  */
+    mouseLeaveDelay: PropTypes.number,
   }
 
   static defaultProps = {
     position: 'top left',
     on: 'hover',
     keepInViewPort: true,
+    mouseEnterDelay: 50,
+    mouseLeaveDelay: 70,
   }
 
   static Content = PopupContent
@@ -304,8 +312,8 @@ export default class Popup extends Component {
       portalProps.openOnTriggerMouseEnter = true
       portalProps.closeOnTriggerMouseLeave = true
       // Taken from SUI: https://git.io/vPmCm
-      portalProps.mouseLeaveDelay = 70
-      portalProps.mouseEnterDelay = 50
+      portalProps.mouseLeaveDelay = this.props.mouseLeaveDelay
+      portalProps.mouseEnterDelay = this.props.mouseEnterDelay
     }
 
     return portalProps
