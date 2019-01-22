@@ -352,6 +352,9 @@ export default class Dropdown extends Component {
      * or go to the first when ArrowDown is pressed on the last( aka infinite selection )
      */
     wrapSelection: PropTypes.bool,
+
+    /** After an item is selected, the focus will be on the input search box. */
+    selectFocusInput: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -368,6 +371,7 @@ export default class Dropdown extends Component {
     selectOnBlur: true,
     selectOnNavigation: true,
     wrapSelection: true,
+    selectFocusInput: false,
   }
 
   static autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value', 'upward']
@@ -409,12 +413,12 @@ export default class Dropdown extends Component {
       if (hasValue && nextProps.multiple && !isNextValueArray) {
         console.error(
           'Dropdown `value` must be an array when `multiple` is set.' +
-            ` Received type: \`${Object.prototype.toString.call(nextProps.value)}\`.`,
+          ` Received type: \`${Object.prototype.toString.call(nextProps.value)}\`.`,
         )
       } else if (hasValue && !nextProps.multiple && isNextValueArray) {
         console.error(
           'Dropdown `value` must not be an array when `multiple` is not set.' +
-            ' Either set `multiple={true}` or use a string or number value.',
+          ' Either set `multiple={true}` or use a string or number value.',
         )
       }
     }
@@ -423,7 +427,7 @@ export default class Dropdown extends Component {
     if (!shallowEqual(nextProps.value, this.props.value)) {
       debug('value changed, setting', nextProps.value)
       this.setValue(nextProps.value)
-      this.setSelectedIndex(nextProps.value)
+      this.setSelectedIndex(nextProps.value, nextProps.options, nextProps.searchQuery)
     }
 
     // The selected index is only dependent on option keys/values.
@@ -432,7 +436,7 @@ export default class Dropdown extends Component {
     if (
       !_.isEqual(this.getKeyAndValues(nextProps.options), this.getKeyAndValues(this.props.options))
     ) {
-      this.setSelectedIndex(undefined, nextProps.options)
+      this.setSelectedIndex(undefined, nextProps.options, nextProps.searchQuery)
     }
   }
 
@@ -601,7 +605,7 @@ export default class Dropdown extends Component {
 
   selectItemOnEnter = (e) => {
     debug('selectItemOnEnter()', keyboardKey.getKey(e))
-    const { search } = this.props
+    const { search, selectFocusInput } = this.props
 
     if (keyboardKey.getCode(e) !== keyboardKey.Enter) return
     e.preventDefault()
@@ -612,7 +616,13 @@ export default class Dropdown extends Component {
     this.makeSelectedItemActive(e)
     this.closeOnChange(e)
     this.clearSearchQuery()
-    if (search && this.searchRef) this.searchRef.focus()
+    if (this.searchRef) {
+      if (search && selectFocusInput) {
+        this.searchRef.focus()
+      } else {
+        this.searchRef.blur()
+      }
+    }
   }
 
   removeItemOnBackspace = (e) => {
@@ -713,7 +723,7 @@ export default class Dropdown extends Component {
   handleItemClick = (e, item) => {
     debug('handleItemClick()', item)
 
-    const { multiple, search } = this.props
+    const { multiple, search, selectFocusInput } = this.props
     const { value } = item
 
     // prevent toggle() in handleClick()
@@ -738,7 +748,7 @@ export default class Dropdown extends Component {
     // Notify the onAddItem prop if this is a new value
     if (isAdditionItem) _.invoke(this.props, 'onAddItem', e, { ...this.props, value })
 
-    if (multiple && search && this.searchRef) this.searchRef.focus()
+    if (search && this.searchRef && selectFocusInput) this.searchRef.focus()
   }
 
   handleFocus = (e) => {
@@ -932,10 +942,13 @@ export default class Dropdown extends Component {
     this.trySetState({ value })
   }
 
-  setSelectedIndex = (value = this.state.value, optionsProps = this.props.options) => {
+  setSelectedIndex = (
+    value = this.state.value,
+    optionsProps = this.props.options,
+    searchQuery = this.state.searchQuery) => {
     const { multiple } = this.props
     const { selectedIndex } = this.state
-    const options = this.getMenuOptions(value, optionsProps)
+    const options = this.getMenuOptions(value, optionsProps, searchQuery)
     const enabledIndicies = this.getEnabledIndices(options)
 
     let newSelectedIndex
@@ -1207,7 +1220,7 @@ export default class Dropdown extends Component {
 
   renderText = () => {
     const { multiple, placeholder, search, text } = this.props
-    const { searchQuery, value, open } = this.state
+    const { searchQuery, value } = this.state
     const hasValue = this.hasValue()
 
     const classes = cx(
@@ -1220,10 +1233,10 @@ export default class Dropdown extends Component {
       _text = null
     } else if (text) {
       _text = text
-    } else if (open && !multiple) {
-      _text = _.get(this.getSelectedItem(), 'text')
     } else if (hasValue) {
       _text = _.get(this.getItemByValue(value), 'text')
+    } else if (open && !multiple) {
+      _text = _.get(this.getSelectedItem(), 'text')
     }
 
     return (

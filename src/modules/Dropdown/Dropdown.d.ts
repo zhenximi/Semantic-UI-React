@@ -215,15 +215,15 @@ export interface StrictDropdownProps {
 
   /** A dropdown can be formatted so that its menu is pointing. */
   pointing?:
-    | boolean
-    | 'left'
-    | 'right'
-    | 'top'
-    | 'top left'
-    | 'top right'
-    | 'bottom'
-    | 'bottom left'
-    | 'bottom right'
+  | boolean
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'top left'
+  | 'top right'
+  | 'bottom'
+  | 'bottom left'
+  | 'bottom right'
 
   /**
    * Mapped over the active items and returns shorthand for the active item Labels.
@@ -286,6 +286,9 @@ export interface StrictDropdownProps {
    * or go to the first when ArrowDown is pressed on the last( aka infinite selection )
    */
   wrapSelection?: boolean
+
+  /** After an item is selected, the focus will be on the input search box.  By default, the control loses focus like a dropdown */
+  selectFocusInput?: boolean;
 }
 
 /* TODO: replace with DropdownProps when #1829 will be fixed:
