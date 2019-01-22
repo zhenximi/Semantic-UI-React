@@ -355,6 +355,12 @@ export default class Dropdown extends Component {
 
     /** After an item is selected, the focus will be on the input search box. */
     selectFocusInput: PropTypes.bool,
+
+    /** Default value for selectedIndex (if needed) */
+    defaultSelectedIndex: PropTypes.number,
+
+    /** Allows you to set the currently selected item by value */
+    selectedIndex: PropTypes.number,
   }
 
   static defaultProps = {
@@ -374,7 +380,7 @@ export default class Dropdown extends Component {
     selectFocusInput: false,
   }
 
-  static autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value', 'upward']
+  static autoControlledProps = ['open', 'searchQuery', 'selectedLabel', 'value', 'upward', 'selectedIndex']
 
   static Divider = DropdownDivider
   static Header = DropdownHeader
