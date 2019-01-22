@@ -53,6 +53,15 @@ export interface StrictDropdownItemProps {
   onClick?: (event: React.MouseEvent<HTMLDivElement>, data: DropdownItemProps) => void
 
   /**
+  * Called on mouseEnter.
+  *
+  * @param {SyntheticEvent} event - React's original SyntheticEvent.
+  * @param {object} data - All props.
+  */
+  onMouseEnter?: (event: React.MouseEvent<HTMLDivElement>, data: DropdownItemProps) => void;
+
+
+  /**
    * The item currently selected by keyboard shortcut.
    * This is not the active item.
    */
