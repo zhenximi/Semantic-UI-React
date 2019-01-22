@@ -978,7 +978,7 @@ export default class Dropdown extends Component {
     }
 
     if (!newSelectedIndex || newSelectedIndex < 0) {
-      newSelectedIndex = enabledIndicies[0]
+      newSelectedIndex = enabledIndicies[0] || 0
     }
 
     this.setState({ selectedIndex: newSelectedIndex })
