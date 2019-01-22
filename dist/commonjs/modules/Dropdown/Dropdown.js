@@ -1141,13 +1141,13 @@ exports.default = Dropdown;
   wrapSelection: true,
   selectFocusInput: false
 });
-(0, _defineProperty2.default)(Dropdown, "autoControlledProps", ['open', 'searchQuery', 'selectedLabel', 'value', 'upward']);
+(0, _defineProperty2.default)(Dropdown, "autoControlledProps", ['open', 'searchQuery', 'selectedLabel', 'value', 'upward', 'selectedIndex']);
 (0, _defineProperty2.default)(Dropdown, "Divider", _DropdownDivider.default);
 (0, _defineProperty2.default)(Dropdown, "Header", _DropdownHeader.default);
 (0, _defineProperty2.default)(Dropdown, "Item", _DropdownItem.default);
 (0, _defineProperty2.default)(Dropdown, "Menu", _DropdownMenu.default);
 (0, _defineProperty2.default)(Dropdown, "SearchInput", _DropdownSearchInput.default);
-(0, _defineProperty2.default)(Dropdown, "handledProps", ["additionLabel", "additionPosition", "allowAdditions", "as", "basic", "button", "children", "className", "clearable", "closeOnBlur", "closeOnChange", "compact", "deburr", "defaultOpen", "defaultSearchQuery", "defaultSelectedLabel", "defaultUpward", "defaultValue", "direction", "disabled", "error", "floating", "fluid", "header", "icon", "inline", "item", "labeled", "lazyLoad", "loading", "minCharacters", "multiple", "noResultsMessage", "onAddItem", "onBlur", "onChange", "onClick", "onClose", "onFocus", "onLabelClick", "onMouseDown", "onOpen", "onSearchChange", "open", "openOnFocus", "options", "placeholder", "pointing", "renderLabel", "scrolling", "search", "searchInput", "searchQuery", "selectFocusInput", "selectOnBlur", "selectOnNavigation", "selectedLabel", "selection", "simple", "tabIndex", "text", "trigger", "upward", "value", "wrapSelection"]);
+(0, _defineProperty2.default)(Dropdown, "handledProps", ["additionLabel", "additionPosition", "allowAdditions", "as", "basic", "button", "children", "className", "clearable", "closeOnBlur", "closeOnChange", "compact", "deburr", "defaultOpen", "defaultSearchQuery", "defaultSelectedIndex", "defaultSelectedLabel", "defaultUpward", "defaultValue", "direction", "disabled", "error", "floating", "fluid", "header", "icon", "inline", "item", "labeled", "lazyLoad", "loading", "minCharacters", "multiple", "noResultsMessage", "onAddItem", "onBlur", "onChange", "onClick", "onClose", "onFocus", "onLabelClick", "onMouseDown", "onOpen", "onSearchChange", "open", "openOnFocus", "options", "placeholder", "pointing", "renderLabel", "scrolling", "search", "searchInput", "searchQuery", "selectFocusInput", "selectOnBlur", "selectOnNavigation", "selectedIndex", "selectedLabel", "selection", "simple", "tabIndex", "text", "trigger", "upward", "value", "wrapSelection"]);
 Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   /** An element type to render as (string or function). */
   as: _lib.customPropTypes.as,
@@ -1419,5 +1419,11 @@ Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   wrapSelection: _propTypes.default.bool,
 
   /** After an item is selected, the focus will be on the input search box. */
-  selectFocusInput: _propTypes.default.bool
+  selectFocusInput: _propTypes.default.bool,
+
+  /** Default value for selectedIndex (if needed) */
+  defaultSelectedIndex: _propTypes.default.number,
+
+  /** Allows you to set the currently selected item by value */
+  selectedIndex: _propTypes.default.number
 } : {};

@@ -1143,7 +1143,7 @@ _defineProperty(Dropdown, "defaultProps", {
   selectFocusInput: false
 });
 
-_defineProperty(Dropdown, "autoControlledProps", ['open', 'searchQuery', 'selectedLabel', 'value', 'upward']);
+_defineProperty(Dropdown, "autoControlledProps", ['open', 'searchQuery', 'selectedLabel', 'value', 'upward', 'selectedIndex']);
 
 _defineProperty(Dropdown, "Divider", DropdownDivider);
 
@@ -1155,7 +1155,7 @@ _defineProperty(Dropdown, "Menu", DropdownMenu);
 
 _defineProperty(Dropdown, "SearchInput", DropdownSearchInput);
 
-_defineProperty(Dropdown, "handledProps", ["additionLabel", "additionPosition", "allowAdditions", "as", "basic", "button", "children", "className", "clearable", "closeOnBlur", "closeOnChange", "compact", "deburr", "defaultOpen", "defaultSearchQuery", "defaultSelectedLabel", "defaultUpward", "defaultValue", "direction", "disabled", "error", "floating", "fluid", "header", "icon", "inline", "item", "labeled", "lazyLoad", "loading", "minCharacters", "multiple", "noResultsMessage", "onAddItem", "onBlur", "onChange", "onClick", "onClose", "onFocus", "onLabelClick", "onMouseDown", "onOpen", "onSearchChange", "open", "openOnFocus", "options", "placeholder", "pointing", "renderLabel", "scrolling", "search", "searchInput", "searchQuery", "selectFocusInput", "selectOnBlur", "selectOnNavigation", "selectedLabel", "selection", "simple", "tabIndex", "text", "trigger", "upward", "value", "wrapSelection"]);
+_defineProperty(Dropdown, "handledProps", ["additionLabel", "additionPosition", "allowAdditions", "as", "basic", "button", "children", "className", "clearable", "closeOnBlur", "closeOnChange", "compact", "deburr", "defaultOpen", "defaultSearchQuery", "defaultSelectedIndex", "defaultSelectedLabel", "defaultUpward", "defaultValue", "direction", "disabled", "error", "floating", "fluid", "header", "icon", "inline", "item", "labeled", "lazyLoad", "loading", "minCharacters", "multiple", "noResultsMessage", "onAddItem", "onBlur", "onChange", "onClick", "onClose", "onFocus", "onLabelClick", "onMouseDown", "onOpen", "onSearchChange", "open", "openOnFocus", "options", "placeholder", "pointing", "renderLabel", "scrolling", "search", "searchInput", "searchQuery", "selectFocusInput", "selectOnBlur", "selectOnNavigation", "selectedIndex", "selectedLabel", "selection", "simple", "tabIndex", "text", "trigger", "upward", "value", "wrapSelection"]);
 
 export { Dropdown as default };
 Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
@@ -1429,5 +1429,11 @@ Dropdown.propTypes = process.env.NODE_ENV !== "production" ? {
   wrapSelection: PropTypes.bool,
 
   /** After an item is selected, the focus will be on the input search box. */
-  selectFocusInput: PropTypes.bool
+  selectFocusInput: PropTypes.bool,
+
+  /** Default value for selectedIndex (if needed) */
+  defaultSelectedIndex: PropTypes.number,
+
+  /** Allows you to set the currently selected item by value */
+  selectedIndex: PropTypes.number
 } : {};

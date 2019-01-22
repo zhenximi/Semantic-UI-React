@@ -215,15 +215,15 @@ export interface StrictDropdownProps {
 
   /** A dropdown can be formatted so that its menu is pointing. */
   pointing?:
-    | boolean
-    | 'left'
-    | 'right'
-    | 'top'
-    | 'top left'
-    | 'top right'
-    | 'bottom'
-    | 'bottom left'
-    | 'bottom right'
+  | boolean
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'top left'
+  | 'top right'
+  | 'bottom'
+  | 'bottom left'
+  | 'bottom right'
 
   /**
    * Mapped over the active items and returns shorthand for the active item Labels.
